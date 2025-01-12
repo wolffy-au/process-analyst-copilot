@@ -1,0 +1,79 @@
+[tool.poetry]
+name = "process_analyst_copilot"
+version = "0.0.0" # This is not used - version is controlled by poetry_dynamic_versioning
+description = "Hellow World deployment test"
+authors = ["Stephan Borg <wolffborg1@gmail.com>"]
+readme = "README.md"
+packages = [{include = "process_analyst_copilot"}]
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13.dev0"
+virtualenv = "^20.28.0"
+poetry = "^1.8.5"
+crewai = "^0.95.0"
+crewai-tools = "^0.25.8"
+langchain-ollama = "^0.2.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+pyright = "^1.1.0"
+poetry-dynamic-versioning = "^1.4.1"
+pytest = "^8.3.4"
+pytest-cov = "^6.0.0"
+types-requests = "^2.32.0.20241016"
+types-pyyaml = "^6.0.12.20241230"
+mypy = "^1.13.0"
+flake8 = "^7.1.1"
+flake8-bugbear = "^24.10.31"
+flake8-annotations = "^3.1.1"
+flake8-pyproject = "^1.2.3"
+#flake8-mypy = "^17.8.0"
+behave = "^1.2.6"
+pdoc = "^15.0.1"
+commitizen = "^4.1.0"
+notebook = "^7.3.2"
+ipywidgets = "^8.1.5"
+ipykernel = "^6.29.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_scheme = "pep440"
+version_provider = "poetry"
+update_changelog_on_bump = false
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+
+[tool.mypy]
+strict = true
+python_version = "3.11"  # Specify your target Python version
+show_error_codes = true  # Show detailed error codes
+ignore_missing_imports = true  # Suppress errors for missing type hints in third-party libraries
+allow_redefinition = false  # Disallow redefinition of variables
+check_untyped_defs = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unreachable = true
+
+[tool.flake8]
+max-line-length = 120
+select = "C,E,F,W,B,B950"
+extend-ignore = "E203,E501,E704,F811,W503"
+exclude = ".venv,.git,docs,build,dist,*.egg-info,.pytest_cache,.vscode,bamboo-specs,jenkins-specs"
+ output-file = "build/flake8/flake8.txt"
+
+[tool.pytest.ini_options]
+addopts = "--cov=process_analyst_copilot --junitxml='build/unit-tests.xml' --cov-report=xml:'build/coverage.xml' --cov-report=html:'build/coverage-reports'"
+pythonpath = "process_analyst_copilot"
+testpaths = ["test/unit"]
