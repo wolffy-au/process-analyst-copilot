@@ -1,7 +1,33 @@
+import json
 from typing import Any, Dict
 import yaml
+from pydantic import BaseModel
 from crewai import Agent, Task, Crew, LLM
 from crewai_tools import FileReadTool
+
+
+class Task(BaseModel):
+    id: int
+    task: str
+    materials: list[str] = []
+    optional: list[str] = []
+
+
+class Step(BaseModel):
+    id: int
+    name: str
+    description: str
+    tasks: list[Task]
+
+
+class Process(BaseModel):
+    steps: list[Step]
+
+    @staticmethod
+    def load(json_file_path: str):
+        with open(json_file_path, "r") as file:
+            data = json.load(file)
+        return Process(**data)
 
 
 class OllamaLLM(LLM):
@@ -137,15 +163,3 @@ class ClarifyTheAsk:
         return results
 
 
-if __name__ == "__main__":
-    draft_process = ClarifyTheAsk(
-        # llm_model="ollama/Xllama3.1",
-        # llm_model="ollama/Xllama3.2",
-        # llm_model="ollama/Xdolphin3",
-        # llm_model="ollama/Xphi4",
-        # llm_model="ollama/Xolmo2",
-    )
-    draft_process.setup()
-    # draft_process.test_llm()
-    # draft_process.test_crew(n_iterations=1)
-    draft_process.kickoff(input_ask="How do I make a good cup of tea?")
