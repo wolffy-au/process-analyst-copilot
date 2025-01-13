@@ -3,36 +3,41 @@ import yaml
 from crewai import Agent, Task, Crew, LLM
 from crewai_tools import FileReadTool
 
-num_ctx = 16384
-
 
 class OllamaLLM(LLM):
     agents_config = None
     tasks_config = None
+    num_ctx = 2048
 
     def get_context_window_size(self) -> int:
         # Override the method with your custom implementation
-        return int(num_ctx * 0.75)
+        return int(self.num_ctx * 0.75)
 
 
 class ClarifyTheAsk:
     def __init__(
         self,
-        llm_model: str = "ollama/Xphi4",
+        llm_model: str = "ollama/llama3.1:8b",
+        num_ctx: int = 4096,
         draft_file: str = "./outputs/1-draftprocess.md",
         assumptions_file: str = "./outputs/2-assumptions.md",
         questions_file: str = "./outputs/3-questions.md",
         reviewed_file: str = "./outputs/4-reviewedprocess.md",
     ) -> None:
-        self.draft_file: str = draft_file
-        self.assumptions_file: str = assumptions_file
-        self.questions_file: str = questions_file
-        self.reviewed_file: str = reviewed_file
         self.llm_model = OllamaLLM(
             model=llm_model,
             temperature=0.3,
             api_base="http://localhost:11434",
         )
+        self.llm_model.num_ctx = num_ctx
+
+        self.draft_file: str = draft_file
+        self.draft_file_tool: FileReadTool = FileReadTool(file_path=self.draft_file)
+        self.assumptions_file: str = assumptions_file
+        self.assumptions_file_tool: FileReadTool = FileReadTool(file_path=self.assumptions_file)
+        self.questions_file: str = questions_file
+        self.questions_file_tool: FileReadTool = FileReadTool(file_path=self.questions_file)
+        self.reviewed_file: str = reviewed_file
 
         # Define file paths for YAML configurations
         files: Dict[str, str] = {
@@ -50,14 +55,14 @@ class ClarifyTheAsk:
         self.agents_config = configs["agents"]
         self.tasks_config = configs["tasks"]
 
-    def testLLM(self) -> None:
+    def test_llm(self) -> None:
         print(
             self.llm_model.call(
                 [{"role": "system", "content": "What is your context window size?"}]
             )
         )
 
-    def testCrew(self, n_iterations: int = 3) -> None:
+    def test_crew(self, n_iterations: int = 3) -> None:
         if self.crew is not None:
             self.crew.test(
                 n_iterations=n_iterations, openai_model_name=self.llm_model.model
@@ -80,7 +85,7 @@ class ClarifyTheAsk:
             config=self.tasks_config["capture_assumptions"],
             agent=self.business_process_analyst,
             output_file=self.assumptions_file,
-            tools=[FileReadTool(file_path=self.draft_file)],
+            tools=[self.draft_file_tool],
         )  # type: ignore
 
         self.clarify_details = Task(
@@ -88,8 +93,8 @@ class ClarifyTheAsk:
             agent=self.business_process_analyst,
             output_file=self.questions_file,
             tools=[
-                FileReadTool(file_path=self.assumptions_file),
-                FileReadTool(file_path=self.draft_file),
+                self.assumptions_file_tool,
+                self.draft_file_tool,
             ],
         )  # type: ignore
 
@@ -98,9 +103,9 @@ class ClarifyTheAsk:
             agent=self.business_process_analyst,
             output_file=self.reviewed_file,
             tools=[
-                FileReadTool(file_path=self.draft_file),
-                FileReadTool(file_path=self.assumptions_file),
-                FileReadTool(file_path=self.questions_file),
+                self.draft_file_tool,
+                self.assumptions_file_tool,
+                self.questions_file_tool,
             ],
         )  # type: ignore
 
@@ -134,13 +139,13 @@ class ClarifyTheAsk:
 
 if __name__ == "__main__":
     draft_process = ClarifyTheAsk(
-        llm_model="ollama/Xllama3.1",
+        # llm_model="ollama/Xllama3.1",
         # llm_model="ollama/Xllama3.2",
         # llm_model="ollama/Xdolphin3",
         # llm_model="ollama/Xphi4",
         # llm_model="ollama/Xolmo2",
     )
     draft_process.setup()
-    # draft_process.testLLM()
-    # draft_process.testCrew(n_iterations=1)
+    # draft_process.test_llm()
+    # draft_process.test_crew(n_iterations=1)
     draft_process.kickoff(input_ask="How do I make a good cup of tea?")
