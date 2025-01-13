@@ -6,28 +6,28 @@ from crewai import Agent, Task, Crew, LLM
 from crewai_tools import FileReadTool
 
 
-class Task(BaseModel):
+class ProcessTask(BaseModel):
     id: int
     task: str
     materials: list[str] = []
     optional: list[str] = []
 
 
-class Step(BaseModel):
+class ProcessStep(BaseModel):
     id: int
     name: str
     description: str
-    tasks: list[Task]
+    tasks: list[ProcessTask]
 
 
-class Process(BaseModel):
-    steps: list[Step]
+class ProcessGeneral(BaseModel):
+    steps: list[ProcessStep]
 
     @staticmethod
-    def load(json_file_path: str):
+    def load(json_file_path: str) -> "ProcessGeneral":
         with open(json_file_path, "r") as file:
             data = json.load(file)
-        return Process(**data)
+        return ProcessGeneral(**data)
 
 
 class OllamaLLM(LLM):
@@ -60,9 +60,13 @@ class ClarifyTheAsk:
         self.draft_file: str = draft_file
         self.draft_file_tool: FileReadTool = FileReadTool(file_path=self.draft_file)
         self.assumptions_file: str = assumptions_file
-        self.assumptions_file_tool: FileReadTool = FileReadTool(file_path=self.assumptions_file)
+        self.assumptions_file_tool: FileReadTool = FileReadTool(
+            file_path=self.assumptions_file
+        )
         self.questions_file: str = questions_file
-        self.questions_file_tool: FileReadTool = FileReadTool(file_path=self.questions_file)
+        self.questions_file_tool: FileReadTool = FileReadTool(
+            file_path=self.questions_file
+        )
         self.reviewed_file: str = reviewed_file
 
         # Define file paths for YAML configurations
@@ -161,5 +165,3 @@ class ClarifyTheAsk:
             }
         ).to_dict()
         return results
-
-
