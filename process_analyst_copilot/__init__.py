@@ -43,20 +43,13 @@ class OllamaLLM(LLM):
 class ClarifyTheAsk:
     def __init__(
         self,
-        llm_model: str = "ollama/llama3.1:8b",
-        num_ctx: int = 4096,
+        llm_model: LLM = None,
         draft_file: str = "./outputs/1-draftprocess.md",
         assumptions_file: str = "./outputs/2-assumptions.md",
         questions_file: str = "./outputs/3-questions.md",
         reviewed_file: str = "./outputs/4-reviewedprocess.md",
     ) -> None:
-        self.llm_model = OllamaLLM(
-            model=llm_model,
-            temperature=0.3,
-            api_base="http://localhost:11434",
-        )
-        self.llm_model.num_ctx = num_ctx
-
+        self.llm_model = llm_model
         self.draft_file: str = draft_file
         self.draft_file_tool: FileReadTool = FileReadTool(file_path=self.draft_file)
         self.assumptions_file: str = assumptions_file

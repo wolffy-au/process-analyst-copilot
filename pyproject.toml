@@ -9,7 +9,6 @@ packages = [{include = "process_analyst_copilot"}]
 [tool.poetry.dependencies]
 python = "^3.10,<3.13.dev0"
 virtualenv = "^20.28.0"
-poetry = "^1.8.5"
 crewai = "^0.95.0"
 crewai-tools = "^0.25.8"
 langchain-ollama = "^0.2.2"
@@ -18,7 +17,7 @@ pydantic = "^2.10.5"
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
 pyright = "^1.1.0"
-poetry-dynamic-versioning = "^1.4.1"
+poetry-dynamic-versioning = "^1.6.0"
 pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
 types-requests = "^2.32.0.20241016"
@@ -35,6 +34,7 @@ commitizen = "^4.1.0"
 notebook = "^7.3.2"
 ipywidgets = "^8.1.5"
 ipykernel = "^6.29.5"
+spacy = "^3.8.3"
 
 [build-system]
 requires = ["poetry-core>=2.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
