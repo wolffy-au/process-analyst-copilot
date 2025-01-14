@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "process_analyst_copilot"}]
 
 [tool.poetry.dependencies]
-python = "^3.10,<3.13.dev0"
+python = "^3.11,<3.13.dev0"
 virtualenv = "^20.28.0"
 crewai = "^0.95.0"
 crewai-tools = "^0.25.8"
