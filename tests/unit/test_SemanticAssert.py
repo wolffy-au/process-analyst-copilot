@@ -7,24 +7,36 @@ from process_analyst_copilot.SemanticAssert import semantic_assert
     [
         (
             # 1.0 score
+            "blue",
+            "Blue.",
+            True,
+        ),
+        (
+            # 1.0 score
             "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup.",
             "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup.",
             True,
         ),
         (
-            # 0.943 score
+            # 0.5697722177715019 score
             "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup.",
             "Step 1: Heat the water. Step 2: Put tea leaves into the cup. Step 3: Pour the hot water.",
             True,
         ),
         (
-            # 0.647 score
+            # 0.45684131124271454 score
+            "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup.",
+            "Step 1: Heat the water. Step 2: Put coffee into the cup. Step 3: Pour the hot water.",
+            False,
+        ),
+        (
+            # -1.6159933112628946 score
             "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup.",
             "This is a dog.",
             False,
         ),
         (
-            # 0.867 score
+            # -0.11948626185654221 score
             "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup.",
             "Step 1: Run around the park. Step 2: Do twenty situps. Step 3: Perform cool down stretches.",
             False,
@@ -37,7 +49,14 @@ def test_semantic_similarity(expected: str, actual: str, expected_result: bool) 
 
 
 # if __name__ == "__main__":
-#     # pytest.main()
+#     #     # pytest.main()
+#     print(
+#         semantic_assert(
+#             "blue",
+#             "Blue.",
+#             verbose=True,
+#         )
+#     )
 #     print(
 #         semantic_assert(
 #             "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup.",

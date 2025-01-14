@@ -8,7 +8,7 @@ from spacy.tokens.doc import Doc
 def semantic_assert(
     expected_output: str,
     actual_output: str,
-    threshold: float = 0.75,
+    threshold: float = 0.5,
     verbose: bool = False,
 ) -> bool:
     # Load the spaCy model
@@ -23,6 +23,10 @@ def semantic_assert(
         nlp = spacy.load("en_core_web_md")
 
     # Process the texts
+    expected_output = "".join(
+        char if char.isalnum() else " " for char in expected_output
+    )
+    actual_output = "".join(char if char.isalnum() else " " for char in actual_output)
     expected_embedding: Doc = nlp(expected_output)
     actual_embedding: Doc = nlp(actual_output)
 

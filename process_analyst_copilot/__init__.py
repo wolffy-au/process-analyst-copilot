@@ -1,12 +1,12 @@
 import json
-from typing import Any, Dict
+from typing import Any, Dict, Union
 import yaml
 from pydantic import BaseModel
 from crewai import Agent, Task, Crew, LLM
 from crewai_tools import FileReadTool
 
 
-class ProcessTask(BaseModel):
+class StepTask(BaseModel):
     id: int
     task: str
     materials: list[str] = []
@@ -17,17 +17,17 @@ class ProcessStep(BaseModel):
     id: int
     name: str
     description: str
-    tasks: list[ProcessTask]
+    tasks: list[StepTask]
 
 
-class ProcessGeneral(BaseModel):
+class GeneralProcess(BaseModel):
     steps: list[ProcessStep]
 
     @staticmethod
-    def load(json_file_path: str) -> "ProcessGeneral":
+    def load(json_file_path: str) -> "GeneralProcess":
         with open(json_file_path, "r") as file:
             data = json.load(file)
-        return ProcessGeneral(**data)
+        return GeneralProcess(**data)
 
 
 class OllamaLLM(LLM):
@@ -43,7 +43,7 @@ class OllamaLLM(LLM):
 class ClarifyTheAsk:
     def __init__(
         self,
-        llm_model: LLM = None,
+        llm_model: Union[LLM, Any] = None,
         draft_file: str = "./outputs/1-draftprocess.md",
         assumptions_file: str = "./outputs/2-assumptions.md",
         questions_file: str = "./outputs/3-questions.md",
@@ -78,12 +78,8 @@ class ClarifyTheAsk:
         self.agents_config = configs["agents"]
         self.tasks_config = configs["tasks"]
 
-    def test_llm(self) -> None:
-        print(
-            self.llm_model.call(
-                [{"role": "system", "content": "What is your context window size?"}]
-            )
-        )
+    def test_llm(self, content: str = "Testing 1 2 3!", role: str = "system") -> str:
+        return str(self.llm_model.call([{"role": role, "content": content}]))
 
     def test_crew(self, n_iterations: int = 3) -> None:
         if self.crew is not None:
