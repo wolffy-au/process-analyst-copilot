@@ -32,8 +32,9 @@ def semantic_assert(
 
     # Calculate the similarity
     similarity_score: float = expected_embedding.similarity(actual_embedding)
-    # Transform the similarity score to follow an exponential curve
-    similarity_score = math.log(similarity_score**4) + 1
+    if similarity_score != 0.0:
+        # Transform the similarity score to follow an exponential curve
+        similarity_score = math.log(similarity_score**4) + 1
 
     if verbose:
         print(f"Similarity score: {similarity_score}")

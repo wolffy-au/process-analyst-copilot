@@ -12,6 +12,12 @@ from process_analyst_copilot.SemanticAssert import semantic_assert
             True,
         ),
         (
+            # division by 0 error
+            "blue",
+            "",
+            False,
+        ),
+        (
             # 1.0 score
             "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup.",
             "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup.",
@@ -57,6 +63,13 @@ def test_semantic_similarity(expected: str, actual: str, expected_result: bool) 
 #             verbose=True,
 #         )
 #     )
+# print(
+#     semantic_assert(
+#         "blue",
+#         "",
+#         verbose=True,
+#     )
+# )
 #     print(
 #         semantic_assert(
 #             "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup.",

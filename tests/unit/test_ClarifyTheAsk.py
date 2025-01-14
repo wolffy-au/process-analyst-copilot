@@ -1,4 +1,6 @@
+from crewai.crews.crew_output import CrewOutput
 import pytest
+from crewai import Agent, Task, Crew
 from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
 from process_analyst_copilot.SemanticAssert import semantic_assert
 
@@ -15,32 +17,69 @@ def clarify_the_ask() -> ClarifyTheAsk:
     return ClarifyTheAsk(llm_model=llm_model)
 
 
-def test_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
+def test_llm_response(clarify_the_ask: ClarifyTheAsk) -> None:
     # Given some input data
     input_data = "In one word what is the colour of the sky?"
     expected_output = "blue"
 
     # When calling your agent's method or task processing logic
-    result = clarify_the_ask.test_llm(content=input_data)
+    result: str = clarify_the_ask.test_llm(content=input_data)
 
     # Then assert that the result meets your expected output
     assert semantic_assert(expected_output, result)
 
 
-# # Example test case for `draft_process`
-# def test_draft_process():
-#     input_ask = "Make a cup of tea"
-#     expected_output = [
-#         "Step 1: Boil water",
-#         "Step 2: Add tea leaves or tea bag to cup",
-#         "Step 3: Pour hot water into the cup",
-#         "Step 4: Steep for desired time",
-#         "Step 5: Remove tea bag or leaves",
-#         "Step 6: Serve",
-#     ]
+def test_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
+    clarify_the_ask.setup()
 
-#     result = draft_process(input_ask)
-#     assert result == expected_output, f"Expected {expected_output}, but got {result}"
+    # Given some input data
+    input_data = "In one word what is the colour of the sky?"
+    expected_output = "blue"
+
+    # When calling your agent's method or task processing logic
+    result: str = clarify_the_ask.business_process_analyst.execute_task(
+        Task(
+            description=input_data,
+            expected_output="A single word",
+            agent=clarify_the_ask.business_process_analyst,
+        )
+    )
+
+    # Then assert that the result meets your expected output
+    assert semantic_assert(
+        expected_output, result
+    ), f"Expected {expected_output}, but got {result}"
+
+
+# Example test case for `draft_process`
+def test_draft_process(clarify_the_ask: ClarifyTheAsk) -> None:
+    clarify_the_ask.setup()
+
+    # Given some input data
+    input_ask = "Make a cup of tea"
+    expected_output = """
+        Step 1: Boil water
+        Step 2: Add tea leaves or tea bag to cup
+        Step 3: Pour hot water into the cup
+        Step 4: Steep for desired time
+        Step 5: Remove tea bag or leaves
+        Step 6: Serve
+    """
+
+    clarify_the_ask.draft_process.output_file = None
+    crew = Crew(
+        agents=[clarify_the_ask.business_process_analyst],
+        tasks=[clarify_the_ask.draft_process],
+    )
+    result: str = crew.kickoff(
+        inputs={
+            "input_ask": input_ask,
+            # "draft_file": self.draft_file,
+        }
+    ).raw
+    assert semantic_assert(
+        expected_output, result
+    ), f"Expected {expected_output}, but got {result}"
 
 
 # # Example test case for `capture_assumptions`
