@@ -1,6 +1,5 @@
-from crewai.crews.crew_output import CrewOutput
 import pytest
-from crewai import Agent, Task, Crew
+from crewai import Task, Crew
 from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
 from process_analyst_copilot.SemanticAssert import semantic_assert
 
