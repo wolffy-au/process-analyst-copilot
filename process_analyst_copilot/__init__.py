@@ -30,6 +30,11 @@ class GeneralProcess(BaseModel):
         return GeneralProcess(**data)
 
 
+# FIXME this class and function require to be overridden as
+# LLM.LLM_CONTEXT_WINDOW_SIZES does not reference Ollama models
+# FIXME Ollama is currently restricted to 2048 context windows
+# Workaround found here which is why this is editable
+# https://github.com/ollama/ollama/issues/8356#issuecomment-2579221678
 class OllamaLLM(LLM):
     agents_config = None
     tasks_config = None
@@ -116,6 +121,11 @@ class ClarifyTheAsk:
                 self.draft_file_tool,
             ],
         )  # type: ignore
+
+        # TODO include human clarification
+        # TODO identify constraints
+        # TODO identify contradictions
+        # TODO identify solution components impacted
 
         self.reviewed_process = Task(
             config=self.tasks_config["reviewed_process"],

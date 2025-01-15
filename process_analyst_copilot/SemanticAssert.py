@@ -16,11 +16,13 @@ def semantic_assert(
     try:
         nlp = spacy.load("en_core_web_md")
     except OSError as e:
-        # raise IOError(f"Error loading spaCy model: {e}")
         print(f"Whoops! {e}")
         print("Attempting to download the 'en_core_web_md' model...")
-        spacy.cli.download("en_core_web_md")  # type: ignore
-        nlp = spacy.load("en_core_web_md")
+        try:
+            spacy.cli.download("en_core_web_md")  # type: ignore
+            nlp = spacy.load("en_core_web_md")
+        except OSError as e:
+            raise IOError(f"Error loading spaCy model after download attempt: {e}")
 
     # Process the texts
     expected_output = "".join(
