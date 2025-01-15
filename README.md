@@ -54,18 +54,17 @@ Here is an example of how to use the application:
 ```python
 from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
 
-if __name__ == "__main__":
-    llm_model = OllamaLLM(
-        model="ollama/llama3.1:8b",
-        temperature=0.3,
-        api_base="http://localhost:11434",
-    )
-    llm_model.num_ctx = 2048
+llm_model = OllamaLLM(
+    model="ollama/llama3.1:8b",
+    temperature=0.3,
+    api_base="http://localhost:11434",
+)
+llm_model.num_ctx = 2048
 
-    draft_process = ClarifyTheAsk(llm_model=llm_model)
-    draft_process.setup()
-    result = draft_process.kickoff(input_ask="How do I make a good cup of tea?")
-    print("See the outputs directory for outputs.")
+draft_process = ClarifyTheAsk(llm_model=llm_model)
+draft_process.setup()
+result = draft_process.kickoff(input_ask="How do I make a good cup of tea?")
+print("See the outputs directory for outputs.")
 ```
 
 ## Testing
@@ -73,7 +72,7 @@ if __name__ == "__main__":
 To run the tests, use the following command:
     poetry run pytest
 
-Note: The `semantic_assert` function has a `verbose` parameter that can be set to `True` to print the similarity score during testing.
+Note: The `semantic_assert` function has a `verbose` parameter that can be set to `True` to log the similarity score during testing.
 
 ## License
 
