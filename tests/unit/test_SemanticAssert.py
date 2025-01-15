@@ -17,6 +17,9 @@ from process_analyst_copilot.SemanticAssert import semantic_assert
             True,
         ),
         (
+            # tests/unit/test_SemanticAssert.py::test_semantic_similarity[blue--False]
+            # H:\Python\AI Projects\test-sandbox\process-analyst-copilot\process_analyst_copilot\SemanticAssert.py:63: UserWarning: [W008] Evaluating Doc.similarity based on empty vectors.
+            # similarity_score: float = expected_embedding.similarity(actual_embedding)
             # division by 0 error
             "blue",
             "",
