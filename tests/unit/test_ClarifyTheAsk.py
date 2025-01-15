@@ -11,7 +11,8 @@ def clarify_the_ask() -> ClarifyTheAsk:
         temperature=0.3,
         api_base="http://localhost:11434",
     )
-    llm_model.num_ctx = 2048
+    # 2048 + 1 to trigger OllamaLLM context window warning
+    llm_model.num_ctx = 2049
 
     return ClarifyTheAsk(llm_model=llm_model)
 
