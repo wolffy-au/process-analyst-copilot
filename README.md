@@ -1,8 +1,8 @@
-# Business Analyst Copilot
+# Process Analyst Copilot
 
 ## Overview
 
-The Business Analyst Copilot is an application designed to assist business analysts in automating various tasks such as drafting processes, capturing assumptions, and clarifying details. It leverages a language model to provide intelligent responses and streamline the workflow.
+The Process Analyst Copilot is an application designed to assist process analysts in automating various tasks such as drafting processes, capturing assumptions, and clarifying details. It leverages a language model to provide intelligent responses and streamline the workflow.
 
 ## Features
 
@@ -29,14 +29,14 @@ The Business Analyst Copilot is an application designed to assist business analy
     cp .env.example .env
     ```
 
-4. Update the [.env](http://_vscodecontentref_/1) file with the necessary configurations.
+4. Update the `.env` file with the necessary configurations.
 
 ## Configuration
 
-The application uses YAML files for configuring agents and tasks. These files are located in the [config](http://_vscodecontentref_/2) directory:
+The application uses YAML files for configuring agents and tasks. These files are located in the [config](./config) directory:
 
-- [agents.yaml](http://_vscodecontentref_/3): Configuration for agents.
-- [tasks.yaml](http://_vscodecontentref_/4): Configuration for tasks.
+- [agents.yaml](./config/agents.yaml): Configuration for agents.
+- [tasks.yaml](./config/tasks.yaml): Configuration for tasks.
 
 ## Usage
 
@@ -45,21 +45,26 @@ The application uses YAML files for configuring agents and tasks. These files ar
     poetry run python sample.py
     ```
 
-2. The main entry point is the [kickoff](http://_vscodecontentref_/5) method, which initiates the process based on the provided input query.
+2. The main entry point is the `kickoff` method in the `ClarifyTheAsk` class, which initiates the process based on the provided input query.
 
 ## Example
 
 Here is an example of how to use the application:
 
 ```python
-from process_analyst_copilot import ClarifyTheAsk
+from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
 
 if __name__ == "__main__":
-    draft_process = ClarifyTheAsk(
-        llm_model="ollama/llama3.1:8b",
+    llm_model = OllamaLLM(
+        model="ollama/llama3.1:8b",
+        temperature=0.3,
+        api_base="http://localhost:11434",
     )
+    llm_model.num_ctx = 2048
+
+    draft_process = ClarifyTheAsk(llm_model=llm_model)
     draft_process.setup()
-    results = draft_process.kickoff(input_ask="How do I make a good cup of tea?")
+    result = draft_process.kickoff(input_ask="How do I make a good cup of tea?")
     print("See the outputs directory for outputs.")
 ```
 
@@ -67,6 +72,8 @@ if __name__ == "__main__":
 
 To run the tests, use the following command:
     poetry run pytest
+
+Note: The `semantic_assert` function has a `verbose` parameter that can be set to `True` to print the similarity score during testing.
 
 ## License
 
