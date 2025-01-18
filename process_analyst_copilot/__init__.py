@@ -139,6 +139,46 @@ class ClarifyTheAsk:
             output_file=self.draft_file.as_posix(),
         )  # type: ignore[reportCallIssue]
 
+    def setup_research_activity(self) -> None:
+        # Task 1.1: Research draft process
+        self.research_activity = Task(
+            config=self.tasks_config["research_activity"],
+            agent=self.business_process_analyst,
+            output_pydantic=SearchResponse,
+            output_file=self.researched_file_json,
+            max_retries=0,
+            tools=[
+                # self.draft_file_tool,
+                self.serper_tool,
+            ],
+            context=[self.draft_process],
+        )  # type: ignore[reportCallIssue]
+
+    def setup_research_process(self) -> None:
+        # Task 1.1: Research draft process
+        self.research_process = Task(
+            config=self.tasks_config["research_process"],
+            agent=self.business_process_analyst,
+            output_file=self.researched_file.as_posix(),
+            max_retries=0,
+            tools=[
+                # self.draft_file_tool,
+                self.serper_tool,
+            ],
+            # context=[self.draft_process],
+        )  # type: ignore[reportCallIssue]
+
+    def setup_draft_process_structured(self) -> None:
+        # Task 1.2: Convert draft process into structured data
+        draft_file_json: str = self.draft_file.as_posix().replace(".md", ".json")
+        self.draft_process_structured = Task(
+            config=self.tasks_config["draft_process_structured"],
+            agent=self.business_process_analyst,
+            output_json=GeneralProcess,
+            output_file=draft_file_json,
+            tools=[self.draft_file_tool],
+        )  # type: ignore
+
     def setup_capture_assumptions(self) -> None:
         # Task 2.1: Capture assumptions
         self.capture_assumptions = Task(
@@ -193,6 +233,7 @@ class ClarifyTheAsk:
             ],
             tasks=[
                 self.draft_process,
+                self.draft_process_structured,
                 self.capture_assumptions,
                 self.clarify_details,
                 self.reviewed_process,
