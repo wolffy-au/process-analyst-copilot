@@ -15,6 +15,6 @@ draft_process = ClarifyTheAsk(llm_model=llm_model)
 print(draft_process.test_llm())
 draft_process.setup()
 results: Dict[str, Any] = draft_process.kickoff(
-    input_ask="How do I simply make a good cup of tea?"
+    input_ask="The simplest way to make a cup of tea?"
 )
 print("See the outputs directory for outputs.")
