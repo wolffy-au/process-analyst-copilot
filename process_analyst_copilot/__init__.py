@@ -1,11 +1,12 @@
+from typing import Any, Dict, Union, Optional
+import logging
 import json
 import os
-from typing import Any, Dict, Union, Optional
+from pathlib import Path
 import yaml
 from pydantic import BaseModel
 from crewai import Agent, Task, Crew, LLM
 from crewai_tools import FileReadTool
-import logging
 
 # Configure logging
 LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING").upper()
@@ -122,10 +123,12 @@ class ClarifyTheAsk:
     def __init__(
         self,
         llm_model: Optional[Union[LLM, Any]] = None,
-        draft_file: str = "./outputs/1-draftprocess.md",
-        assumptions_file: str = "./outputs/2-assumptions.md",
-        questions_file: str = "./outputs/3-questions.md",
-        reviewed_file: str = "./outputs/4-reviewedprocess.md",
+        config_dir: str = "config",
+        output_dir: str = "outputs",
+        draft_file: str = "1-draftprocess.md",
+        assumptions_file: str = "2-assumptions.md",
+        questions_file: str = "3-questions.md",
+        reviewed_file: str = "4-reviewedprocess.md",
     ) -> None:
         """Initializes the ClarifyTheAsk instance.
 
@@ -137,31 +140,31 @@ class ClarifyTheAsk:
             reviewed_file (str): Path to the reviewed process output file.
         """
         if llm_model is None:
-            self.llm_model = LLM("gpt-4o-mini")
+            self.llm_model = LLM(model="gpt-4o-mini")
         else:
             self.llm_model = llm_model
 
-        self.draft_file: str = draft_file
-        self.draft_file_tool: FileReadTool = FileReadTool(file_path=self.draft_file)
-        self.assumptions_file: str = assumptions_file
-        self.assumptions_file_tool: FileReadTool = FileReadTool(
-            file_path=self.assumptions_file
-        )
-        self.questions_file: str = questions_file
-        self.questions_file_tool: FileReadTool = FileReadTool(
-            file_path=self.questions_file
-        )
-        self.reviewed_file: str = reviewed_file
+        self.config_dir: str = Path(Path.cwd() / config_dir).as_posix()
+        self.output_dir: str = Path(Path.cwd() / output_dir).as_posix()
+        self.draft_file: str = Path(Path(self.output_dir) / draft_file).as_posix()
+        self.assumptions_file: str = Path(
+            Path(self.output_dir) / assumptions_file
+        ).as_posix()
+        self.questions_file: str = Path(
+            Path(self.output_dir) / questions_file
+        ).as_posix()
+        self.reviewed_file: str = Path(Path(self.output_dir) / reviewed_file).as_posix()
 
         # Define file paths for YAML configurations
         files: Dict[str, str] = {
-            "agents": "config/agents.yaml",
-            "tasks": "config/tasks.yaml",
+            "agents": "agents.yaml",
+            "tasks": "tasks.yaml",
         }
 
         # Load configurations from YAML files
         configs = {}
         for config_type, file_path in files.items():
+            file_path: str = Path(Path(self.config_dir) / file_path).as_posix()
             try:
                 with open(file_path, "r") as file:
                     configs[config_type] = yaml.safe_load(file)
@@ -201,18 +204,22 @@ class ClarifyTheAsk:
 
     def setup(self) -> None:
         """Sets up agents and tasks for the clarification process."""
+        # Agent: Busness Process Analyst
         self.business_process_analyst = Agent(
             config=self.agents_config["business_process_analyst"],
             max_iter=2,  # Default: 20 iterations
             llm=self.llm_model,
         )  # type: ignore
 
+        # Task 1.1: Draft process generation
         self.draft_process = Task(
             config=self.tasks_config["draft_process"],
             agent=self.business_process_analyst,
             output_file=self.draft_file,
         )  # type: ignore
 
+        self.draft_file_tool: FileReadTool = FileReadTool(file_path=self.draft_file)
+        # Task 2.1: Capture assumptions
         self.capture_assumptions = Task(
             config=self.tasks_config["capture_assumptions"],
             agent=self.business_process_analyst,
@@ -220,6 +227,10 @@ class ClarifyTheAsk:
             tools=[self.draft_file_tool],
         )  # type: ignore
 
+        # Task 3.1: Clarify details
+        self.assumptions_file_tool: FileReadTool = FileReadTool(
+            file_path=self.assumptions_file
+        )
         self.clarify_details = Task(
             config=self.tasks_config["clarify_details"],
             agent=self.business_process_analyst,
@@ -230,6 +241,15 @@ class ClarifyTheAsk:
             ],
         )  # type: ignore
 
+        # TODO include human clarification
+        # TODO identify constraints
+        # TODO identify contradictions
+        # TODO identify solution components impacted
+
+        # Task 5.1: Review process
+        self.questions_file_tool: FileReadTool = FileReadTool(
+            file_path=self.questions_file
+        )
         self.reviewed_process = Task(
             config=self.tasks_config["reviewed_process"],
             agent=self.business_process_analyst,
@@ -242,15 +262,17 @@ class ClarifyTheAsk:
         )  # type: ignore
 
         self.crew = Crew(
-            agents=[self.business_process_analyst],
+            agents=[
+                self.business_process_analyst,
+            ],
             tasks=[
                 self.draft_process,
                 self.capture_assumptions,
                 self.clarify_details,
                 self.reviewed_process,
             ],
+            # cache=False,
             verbose=True,
-            cache=False,
         )
 
     def kickoff(self, input_ask: str) -> Dict[str, Any]:
