@@ -1,0 +1,398 @@
+Below is a task description and expected output. Can you improve these to be articulate, clearer and more comprehensive.
+
+capture_assumptions:
+  description: >
+    Review the document `{draft_file}` containing detailed process and develop a series of articulate
+    assumptions that require clarification of any uncertainties present. Document these assumptions in detaile along with their assumed values and related process steps for future reference.    
+  expected_output: >
+    Present a well-organized, structured list of clear, articulate assumptions. Each assumption
+    should capture an identified assumption, ambiguity, or gap in the draft process, including which process steps they are related to and ensuring that no 
+    critical details are overlooked and clarified for accurate and complete process documentation.
+
+
+
+
+
+Below is a task description and expected output. Can you consolidate without losing any detail.
+
+Description: >
+    Review the document `{draft_file}` containing detailed process information. Identify areas with uncertainties
+or ambiguities within the described process, articulate them clearly, and develop a set of assumptions that need
+clarification.
+    Document these assumptions in detail along with their assumed values for future reference.
+    Analyze the document {draft_file} containing the detailed process and identify any uncertainties, ambiguities, or gaps in the outlined steps.
+    Develop a comprehensive and well-structured list of assumptions that require clarification, ensuring each assumption is clearly articulated.
+    For each assumption, document the assumed value (if applicable) and specify the related process steps where the assumption applies, providing context for future reference.
+    The goal is to ensure that all uncertainties are highlighted, making it easier to address them and refine the process further.
+
+Expected Output: >
+    Provide an organized, structured list of well-articulated assumptions. Each assumption should address an
+identified ambiguity or gap in the draft process.
+    Ensure that each assumption captures the following:
+      - The specific assumption or uncertainty identified.
+      - The related process steps to which this assumption pertains.
+      - Clarification or explanation for accurately documenting the process, ensuring no critical details are
+overlooked.
+    Provide a well-organized, detailed list of assumptions, clearly structured in Markdown format.
+    Each entry should include:
+    * The specific assumption identified.
+    * The assumed value (if applicable).
+    * The related process step(s) to which the assumption applies.
+    *Additional context to explain the potential impact or importance of clarifying the assumption.
+    Ensure the list is thorough and leaves no critical detail or ambiguity unaddressed, laying the groundwork for accurate and complete process documentation.
+
+
+
+Below is a task description and expected output, specifically for taking a draft process, a list of assumptions and responses to questions from a user to improve and re-engineer the draft process. Can you suggest any improvements to be more articulate, clearer and more comprehensive without repeating any content between task description and expected output.
+`
+reviewed_process:
+  description: >
+    Review the documents `{draft_file}`, `{assumptions_file}` and `{questions_file}` containing the draft process, identified assumptions and clarifications, to revisit, refine and optimize and re-engineer the original process detailed in `{draft_file}`. Ensure to incorporate the clarified details and minimize reliance on assumptions. The goal is to ensure the process is as precise and actionable as possible.
+  expected_output: >
+    Present a revised, enhanced version of the process steps. The updated process should reflect the clarified details, be logically structured, with actionable details, free from unnecessary ambiguities and reliance on assumptions. It should also contain references to assumptions made, where assumed values have been used, as part of the process.
+`
+
+For reference, here are the task descriptions and expected outputs of the three previous tasks.
+`
+draft_process:
+  description: >
+    Develop a detailed workflow outlining the necessary actions to accomplish the task specified in:
+    `{input_ask}`
+    Break the task into clear, logical, and sequential steps, ensuring the process is well-structured, actionable, and 
+    accounts for any dependencies, decision points, or notable considerations.
+  expected_output: >
+    A comprehensive, well-organized list of process steps. Each step should be concise, easy to 
+    follow, and include additional context or substeps as needed to avoid ambiguity. Use numbered lists or nested 
+    bullet points to represent hierarchical workflows where applicable.
+
+capture_assumptions:
+  description: >
+    Review the detailed process document `{draft_file}` to identify areas with uncertainties, ambiguities, or gaps in the described process. 
+    Clearly articulate these areas of uncertainty and develop a well-structured list of assumptions that require clarification.
+    Document these assumptions in detail along with their assumed values, if applicable, to provide context for future reference.
+    The goal is to ensure all uncertainties are highlighted and refined for accurate process documentation.
+  expected_output: >
+    Provide a thorough, structured, comprehensive list of well-articulated assumptions addressing identified ambiguities or gaps in the draft process.
+    Ensure no critical detail or ambiguity overlooked, laying the groundwork for accurate and complete documentation.
+    Each assumption should include the following details:
+      - Specific assumption, gap or uncertainty identified
+      - Assumed value (if applicable)
+      - Related process step(s) where the assumption applies
+      - Additional context or explanation for a thorough understanding of the importance and impact on the process
+    The list should be detailed and complete, leaving no critical detail or ambiguity unaddressed, providing a strong foundation for accurate and refined process documentation.
+
+clarify_details:
+  description: >
+    Develop a comprehensive set of targeted, specific questions to gather essential information from the user. This
+    aims to identify and address potential ambiguities or missing details within the assumptions listed in
+    `{assumptions_file}`. The goal is to minimize assumptions and ensure that all critical information is clarified
+    with as few uncertainties remaining unaddressed.
+    These questions should focus on refining the process for accuracy and completeness, similar to asking "What type
+    of tea should be used?" or "What is the desired serving temperature?" when making tea.
+  expected_output: >
+    Provide a well-organized list of questions addressing the assumptions identified during analysis.
+`
+
+---------------------
+
+
+I want to create unit tests for the above agent and tasks. Can you suggest a good way to test these in python, either using pytest unit testing or behave gherkin testing methods?
+
+
+
+To effectively test your AI agent and tasks in Python, you can utilize either pytest for unit testing or behave
+(Gherkin) for behavior-driven development (BDD). Here's how each approach might be applied:
+
+**Using Pytest:**
+Pytest is a robust framework for writing simple and scalable tests. It supports various testing frameworks such as
+unittest and allows you to write concise test functions.
+
+1. Define your agent methods or task processing logic in Python classes or modules.
+2. Write pytest functions (tests) that verify the correctness of your agent's responses, given specific input
+conditions.
+
+```python
+# Example using pytest
+
+import pytest
+
+def test_agent_response():
+    # Given some input data
+    input_data = ...
+
+    # When calling your agent's method or task processing logic
+    result = your_agent_method(input_data)
+
+    # Then assert that the result meets your expected output
+    assert result == expected_output
+```
+
+**Using Behave (Gherkin):**
+Behave is a BDD tool that helps write test cases in plain language, making it easier for stakeholders to
+understand. It uses Gherkin, which allows you to define the behavior of the system using simple English.
+
+1. Define the feature and steps in your Gherkin file(s) (`.feature` files).
+2. Write Python step implementations that correspond to each step definition.
+
+```gherkin
+# Example using Behave (Gherkin)
+
+Feature: Testing Agent's Functionality
+
+Scenario: Successful Response from AI Agent
+  Given I have input data
+  When I process the data with the AI agent
+  Then the response should be as expected
+```
+
+In your Python code:
+
+```python
+# Example using Behave (Gherkin)
+
+from behave import given, when, then
+
+@given('I have input data')
+def step_given_data(context):
+    context.input_data = ...  # Set up your input data
+
+@when('I process the data with the AI agent')
+def step_process_data(context):
+    context.result = your_agent_method(context.input_data)
+
+@then('the response should be as expected')
+def step_check_result(context):
+    assert context.result == expected_output
+```
+
+These are just starting points, and you can expand upon them based on your specific requirements and the
+complexity of your agent's tasks. Both pytest and behave are powerful tools with extensive documentation to help
+you create comprehensive tests for your AI agent.
+
+1. Unit Testing with Pytest
+With pytest, you can write unit tests that focus on individual functions or methods within your agent's tasks. You'll test each task's behavior, ensuring that the expected inputs produce the correct outputs.
+
+Steps for Unit Testing:
+
+Set Up the Test Environment:
+You’ll need to create mock inputs, and outputs, and set up fixtures as necessary to isolate the tasks.
+
+Test Task Descriptions and Expected Outputs:
+Write tests to check that the tasks' outputs match expectations when given certain inputs.
+
+Mocking Dependencies:
+For tasks that involve external files or user input, you can use mock objects or fixtures to simulate these dependencies.
+
+Example of Unit Tests Using Pytest:
+Assuming you have the following functions for tasks:
+
+draft_process()
+capture_assumptions()
+clarify_details()
+You can write unit tests for each:
+
+python
+Copy code
+import pytest
+from agent import draft_process, capture_assumptions, clarify_details
+
+# Example test case for `draft_process`
+def test_draft_process():
+    input_ask = "Make a cup of tea"
+    expected_output = [
+        "Step 1: Boil water",
+        "Step 2: Add tea leaves or tea bag to cup",
+        "Step 3: Pour hot water into the cup",
+        "Step 4: Steep for desired time",
+        "Step 5: Remove tea bag or leaves",
+        "Step 6: Serve"
+    ]
+    
+    result = draft_process(input_ask)
+    assert result == expected_output, f"Expected {expected_output}, but got {result}"
+
+# Example test case for `capture_assumptions`
+def test_capture_assumptions():
+    assumptions_file = "assumptions.md"
+    draft_file = "draft_process.md"
+    
+    expected_output = [
+        "What type of tea should be used?",
+        "What is the desired steeping time?",
+        "What is the preferred serving temperature?"
+    ]
+    
+    result = capture_assumptions(assumptions_file, draft_file)
+    assert result == expected_output, f"Expected {expected_output}, but got {result}"
+
+# Example test case for `clarify_details`
+def test_clarify_details():
+    assumptions_file = "assumptions.md"
+    draft_file = "draft_process.md"
+    assumptions = {
+        "tea_type": "black tea",
+        "steeping_time": "5 minutes"
+    }
+    clarified_output = [
+        "Assumption: Tea type is black tea.",
+        "Assumption: Steeping time is 5 minutes.",
+        "Updated Step 1: Boil water.",
+        "Updated Step 2: Add black tea leaves to cup.",
+        "Updated Step 3: Pour hot water into the cup."
+    ]
+    
+    result = clarify_details(assumptions, draft_file)
+    assert result == clarified_output, f"Expected {clarified_output}, but got {result}"
+Run Tests:
+To run your tests with pytest, you would run the following command in your terminal:
+
+bash
+Copy code
+pytest test_agent.py
+This will execute the tests and show you whether they pass or fail.
+
+2. Behavior-Driven Testing with Behave
+For behavior-driven testing, you can use Behave with Gherkin syntax. This allows you to describe your agent's behavior in natural language, then implement Python code that matches those behaviors.
+
+Steps for Behavior-Driven Development:
+
+Write Feature Files:
+Create .feature files using Gherkin syntax that describe the expected behavior of the agent’s tasks.
+
+Implement Step Definitions:
+Implement Python functions that link the Gherkin steps to your agent's logic.
+
+Example of Behave Test Using Gherkin:
+Create a Feature File (draft_process.feature):
+gherkin
+Copy code
+Feature: Draft process creation
+
+  Scenario: Create a process for making a cup of tea
+    Given I have a request to "Make a cup of tea"
+    When I document the process steps
+    Then I should get the following steps:
+      | Step  | Description              |
+      | Step 1| Boil water               |
+      | Step 2| Add tea leaves to cup    |
+      | Step 3| Pour hot water into cup  |
+      | Step 4| Steep tea for desired time |
+      | Step 5| Remove tea bag or leaves |
+      | Step 6| Serve tea                |
+Create Step Definitions (steps.py):
+python
+Copy code
+from behave import given, when, then
+from agent import draft_process
+
+@given('I have a request to "{input_ask}"')
+def step_impl_given_request(context, input_ask):
+    context.input_ask = input_ask
+
+@when('I document the process steps')
+def step_impl_when_document_process(context):
+    context.result = draft_process(context.input_ask)
+
+@then('I should get the following steps:')
+def step_impl_then_verify_steps(context):
+    expected_steps = [
+        "Step 1: Boil water",
+        "Step 2: Add tea leaves to cup",
+        "Step 3: Pour hot water into cup",
+        "Step 4: Steep tea for desired time",
+        "Step 5: Remove tea bag or leaves",
+        "Step 6: Serve tea"
+    ]
+    assert context.result == expected_steps, f"Expected {expected_steps}, but got {context.result}"
+Run Behave Tests:
+To run your tests with Behave, use the following command:
+
+bash
+Copy code
+behave
+This will execute the behavior-driven tests, ensuring that the agent performs as expected when given different inputs.
+
+Summary:
+Pytest is great for unit testing, allowing you to focus on testing specific functions or methods in isolation. You would create mock inputs and verify that each task is performing correctly.
+Behave with Gherkin is suitable for testing the agent’s behavior in a more user-centric and business-friendly way. It allows you to write natural language scenarios that describe the expected behavior of your tasks, making it easier to communicate the testing process to non-technical stakeholders.
+By using both approaches, you can ensure that your agent behaves correctly both at the unit level and in terms of overall user experience.
+
+
+
+
+
+
+You said:
+Rather than using assert, am I able to check if the reponses are semantically the same using generative AI LLM calls?
+ChatGPT said:
+ChatGPT
+Yes, you can use Generative AI LLM (Large Language Model) calls to check if the responses are semantically the same, rather than relying solely on traditional methods like assertions. To achieve this, you would use an embedding-based similarity comparison to evaluate the semantic similarity between expected and actual outputs. Embeddings are vector representations of text that capture its meaning, which can then be compared to measure how semantically similar two pieces of text are.
+
+Steps to Use Generative AI for Semantic Similarity:
+Generate Embeddings for Expected and Actual Outputs: You can use a pre-trained language model (like GPT, BERT, or OpenAI’s embeddings models) to generate embeddings for both the expected output (your predefined list of steps) and the actual output (the response from your agent).
+
+Compute Cosine Similarity: Once you have the embeddings, you can compute the cosine similarity between them. A high similarity score (close to 1) indicates that the two pieces of text are semantically similar, while a lower score suggests differences in meaning.
+
+Threshold for Semantic Match: You can define a threshold for what is considered a "match." For example, if the cosine similarity is above 0.9, you might consider the outputs semantically the same.
+
+Example Approach in Python with OpenAI API (or any embedding model):
+Prerequisites:
+Install openai or transformers (depending on the model you're using) for embeddings.
+bash
+Copy code
+pip install openai numpy
+Code Example Using OpenAI API:
+python
+Copy code
+import openai
+import numpy as np
+
+# Set up your OpenAI API key
+openai.api_key = "your-api-key-here"
+
+# Function to get embeddings from OpenAI's API
+def get_embeddings(text):
+    response = openai.Embedding.create(
+        input=text,
+        model="text-embedding-ada-002"  # Use OpenAI's embedding model
+    )
+    return np.array(response['data'][0]['embedding'])
+
+# Function to compute cosine similarity
+def cosine_similarity(embedding1, embedding2):
+    return np.dot(embedding1, embedding2) / (np.linalg.norm(embedding1) * np.linalg.norm(embedding2))
+
+# Example test case for semantic similarity check
+def test_semantic_similarity(expected_output, actual_output):
+    # Get embeddings for both expected and actual outputs
+    expected_embedding = get_embeddings(expected_output)
+    actual_embedding = get_embeddings(actual_output)
+    
+    # Calculate cosine similarity
+    similarity_score = cosine_similarity(expected_embedding, actual_embedding)
+    
+    # Define a threshold for "semantic equivalence"
+    threshold = 0.9
+    
+    print(f"Similarity score: {similarity_score}")
+    if similarity_score >= threshold:
+        print("The responses are semantically the same!")
+    else:
+        print("The responses are different.")
+
+# Example usage:
+expected = "Step 1: Boil water. Step 2: Add tea leaves. Step 3: Pour water into cup."
+actual = "Step 1: Heat the water. Step 2: Put tea leaves into the cup. Step 3: Pour the hot water."
+
+test_semantic_similarity(expected, actual)
+Explanation:
+get_embeddings: This function uses the OpenAI API to generate text embeddings for a given string. These embeddings are high-dimensional vectors that represent the semantic content of the text.
+cosine_similarity: The cosine similarity formula measures the cosine of the angle between two vectors. A value close to 1 indicates that the vectors are similar in meaning.
+test_semantic_similarity: This function computes the similarity between the expected and actual output based on their embeddings and compares it against a threshold.
+Expected Output:
+If the similarity score is above 0.9 (adjustable threshold), it will indicate that the two responses are semantically the same. You can change the threshold depending on how strict you want to be about semantic equivalence.
+
+Considerations:
+Handling Variations: This approach works well when the wording differs but the meaning is the same. For example, "Add tea leaves" and "Put tea leaves into the cup" would likely have a high similarity score.
+Performance: Embedding models like OpenAI’s may require some API calls, which could be slower and cost more compared to simpler traditional methods. However, for complex, nuanced comparisons, this is an effective solution.
+Granularity: You could also compare sentence-by-sentence or process step-by-process step for more fine-grained checks.
