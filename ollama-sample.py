@@ -5,7 +5,7 @@ from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
 # Workaround found here which is why this is editable
 # https://github.com/ollama/ollama/issues/8356#issuecomment-2579221678
 llm_model = OllamaLLM(
-    model="ollama/custom",
+    model="ollama/llama3.1:8b",
     temperature=0.3,
     api_base="http://localhost:11434",
 )
