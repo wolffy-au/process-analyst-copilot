@@ -1,66 +1,44 @@
-1. **Preparation**
-   - Gather necessary materials:
-     - Teapot or cup
-     - Tea (type pre-selected by user: black, green, herbal)
-     - Kettle or pot for boiling water
-     - Fresh cold water
-     - Optional enhancements: milk, sugar, lemon, honey, sweeteners
+**The Refined Way to Make a Cup of Tea Workflow**
 
-2. **Boil the Water**
-   - Fill the kettle with fresh cold water.
-   - Boil to appropriate temperature:
-     - Black tea: 100°C (212°F)
-     - Green tea: 80-85°C (175-185°F)
-     - Herbal tea: 95-100°C (203-212°F)
-   - **Assumption:** Kettle or pot can reach and maintain precise temperatures.
+1. **Gather Ingredients**
+	* Substep 1.1: Ensure tea leaves or tea bags are readily available.
+	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
+	* Substep 1.2: Verify the kettle is filled with fresh water and placed on the stovetop.
+	* Assumption: For this substep, the assumed value for assumption "Water Quality" will be used.
+	* Substep 1.3: Check if sugar, milk (or preferred dairy/milk alternative), and any desired sweeteners are within reach.
 
-3. **Prepare the Teapot/Cup**
-   - Pre-warm by rinsing with hot water.
-   - Discard rinse water to ensure temperature retention during steeping.
+2. **Heat Water**
+	* Substep 2.1: Turn the stove to medium-high heat.
+	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
+	* Substep 2.2: Wait for the water to reach a rolling boil.
+	* Substep 2.3: Once boiling, reduce heat to a simmer and let it continue to warm.
 
-4. **Add Tea Leaves/Bag**
-   - Use one teaspoon of loose tea leaves per person, plus an extra "for the pot."
-   - Alternatively, place a tea bag in each cup for individual servings.
-   - **Assumption:** Standardized quantity of tea leaves ensures consistent strength and flavor.
+3. **Prepare Tea**
+	* Substep 3.1: Measure out one teaspoon of loose-leaf tea or use one tea bag per cup.
+	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
+	* Substep 3.2: Place the measured tea into a teapot or directly into your cup if using a tea infuser.
+	* Substep 3.3: Pour the heated water over the tea leaves or tea bag.
 
-5. **Pour Boiled Water**
-   - Pour over tea leaves or bags, ensuring all are submerged for even steeping.
+4. **Steep and Infuse**
+	* Substep 4.1: Allow the tea to steep for the recommended time (usually 2-5 minutes, depending on personal preference).
+	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
+	* Substep 4.2: If using loose-leaf tea, consider adding a strainer over your cup to catch leaves.
 
-6. **Steep the Tea**
-   - Steep according to type:
-     - Black tea: 3-5 minutes
-     - Green tea: 2-3 minutes
-     - Herbal tea: 5-7 minutes
-   - Adjust time based on desired strength.
-   - **Assumption:** User can measure steeping time accurately.
+5. **Add Sweeteners and Creamers**
+	* Substep 5.1: Add sugar, honey, or other sweeteners according to taste.
+	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
+	* Substep 5.2: Pour in milk (or preferred dairy/milk alternative) if desired.
 
-7. **Remove Leaves/Bags**
-   - Use a strainer to remove loose leaves from the teapot.
-   - Discard or gently squeeze tea bags for additional flavor extraction, if preferred.
-   - **Assumption:** Availability of a suitable strainer.
+6. **Serve and Enjoy**
+	* Substep 6.1: Transfer the tea to your cup using a teapot or by pouring directly from the infuser.
+	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
+	* Substep 6.2: Stir well to ensure all ingredients are mixed together.
+	* Substep 6.3: Serve immediately and enjoy.
 
-8. **Add Enhancements (Optional)**
-   - Add milk, sugar, lemon, honey, or sweeteners according to taste preference.
-   - Stir well to combine all ingredients.
-   - **Assumption:** Optional enhancements are available and preferred by the user.
+**Notable Considerations**
 
-9. **Serve and Enjoy**
-   - Pour tea into cups immediately while hot to maintain optimal temperature.
+- **Tea Variety**: Different teas have varying steeping times, so it's essential to research or follow the package instructions for the specific tea you're using.
+- **Water Quality**: Use fresh, cold water for brewing to prevent any off-flavors in your tea.
+- **Equipment Maintenance**: Regularly clean and descale your kettle to ensure optimal performance.
 
-10. **Post-Preparation Cleanup**
-    - Clean teapot, kettle, and utensils used.
-    - Store leftover tea leaves or bags properly for future use.
-    - **Assumption:** User knows proper cleaning and storage techniques.
-
-### Remaining Assumptions
-
-- **Type of Tea:** User preference determines the type of tea used, impacting boiling temperature and steeping time.
-- **Kettle Accuracy:** Kettle or pot has accurate temperature control to optimize flavor extraction.
-- **Tea Quantity:** One teaspoon of loose tea leaves per person ensures consistent strength and flavor.
-- **Strainer Availability:** A suitable strainer is available for separating loose leaves from brewed tea.
-- **Steeping Time Measurement:** User can measure steeping time accurately.
-- **Enhancements Availability:** Optional enhancements are available and preferred by the user.
-- **Pre-warming Feasibility:** Pre-warming teapot or cup effectively maintains serving temperature.
-- **Time Measurement:** User has a method to measure time accurately for steeping.
-- **Cleaning Knowledge:** User knows proper cleaning and storage techniques.
-- **Water Quality:** Access to fresh, clean water is available for boiling.
+This refined workflow outlines a detailed process for making a cup of tea. By following these steps, anyone can create a delicious cup of tea tailored to their preferences while minimizing ambiguity and reliance on assumptions.

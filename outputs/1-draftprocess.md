@@ -1,34 +1,37 @@
-To make a good cup of tea, follow these steps:
+**The Simplest Way to Make a Cup of Tea Workflow**
 
-1. **Gather Ingredients**:
-   - Select high-quality tea leaves or bags based on your preference.
-   - Use fresh water that has been purified or filtered.
+1. **Gather Ingredients**
+	* Substep 1.1: Ensure tea leaves or tea bags are readily available.
+	* Substep 1.2: Verify the kettle is filled with fresh water and placed on the stovetop.
+	* Substep 1.3: Check if sugar, milk (or preferred dairy/milk alternative), and any desired sweeteners are within reach.
 
-2. **Prepare the Tea**:
-   - Boil the water in a kettle until it reaches the desired temperature (usually around 80-100°C/176-212°F for black tea, and lower temperatures for green tea).
-   - While the water is heating, place the tea leaves or bags into a teapot or individual cups.
+2. **Heat Water**
+	* Substep 2.1: Turn the stove to medium-high heat.
+	* Substep 2.2: Wait for the water to reach a rolling boil.
+	* Substep 2.3: Once boiling, reduce heat to a simmer and let it continue to warm.
 
-3. **Brew the Tea**:
-   - Pour the hot water over the tea leaves or bags.
-   - Steep the tea for 3-5 minutes for black tea and 1-3 minutes for green tea. Adjust steeping time based on personal preference and tea type.
+3. **Prepare Tea**
+	* Substep 3.1: Measure out one teaspoon of loose-leaf tea or use one tea bag per cup.
+	* Substep 3.2: Place the measured tea into a teapot or directly into your cup if using a tea infuser.
+	* Substep 3.3: Pour the heated water over the tea leaves or tea bag.
 
-4. **Strain and Serve**:
-   - Once steeped, remove the tea leaves or bags from the water.
-   - Pour the tea into cups or a teapot with a strainer to keep the leaves out of the final brew.
+4. **Steep and Infuse**
+	* Substep 4.1: Allow the tea to steep for the recommended time (usually 2-5 minutes, depending on personal preference).
+	* Substep 4.2: If using loose-leaf tea, consider adding a strainer over your cup to catch leaves.
 
-5. **Add Optional Ingredients (if desired)**:
-   - Stir in sugar, honey, milk, creamer, or lemon according to taste.
-   - Add sweeteners and dairy products gradually to taste.
+5. **Add Sweeteners and Creamers**
+	* Substep 5.1: Add sugar, honey, or other sweeteners according to taste.
+	* Substep 5.2: Pour in milk (or preferred dairy/milk alternative) if desired.
 
-6. **Serve Immediately**:
-   - Serve the tea hot, along with any accompaniments such as biscuits or pastries.
+6. **Serve and Enjoy**
+	* Substep 6.1: Transfer the tea to your cup using a teapot or by pouring directly from the infuser.
+	* Substep 6.2: Stir well to ensure all ingredients are mixed together.
+	* Substep 6.3: Serve immediately and enjoy.
 
-7. **Enjoy Your Tea**:
-   - Sip your tea slowly and savor its flavor.
-   - Keep the tea away from direct sunlight and heat after brewing to maintain its quality.
+**Notable Considerations**
 
-8. **Clean Up**:
-   - Wash the cups, teapot, strainer, and any other equipment used with warm soapy water.
-   - Dry them thoroughly before storing to prevent water spots or mold growth.
+- **Tea Variety**: Different teas have varying steeping times, so it's essential to research or follow the package instructions for the specific tea you're using.
+- **Water Quality**: Use fresh, cold water for brewing to prevent any off-flavors in your tea.
+- **Equipment Maintenance**: Regularly clean and descale your kettle to ensure optimal performance.
 
-By following these steps, you can create a good cup of tea that suits your taste preferences. Adjust quantities and brewing times according to the type of tea and your personal liking for an optimal experience.
+This workflow outlines a straightforward process for making a cup of tea. By following these steps, anyone can create a delicious cup of tea tailored to their preferences.
