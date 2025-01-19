@@ -5,11 +5,11 @@ from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
 # Workaround found here which is why this is editable
 # https://github.com/ollama/ollama/issues/8356#issuecomment-2579221678
 llm_model = OllamaLLM(
-    model="ollama/Xdolphin3",
+    model="ollama/custom",
     temperature=0.3,
     api_base="http://localhost:11434",
 )
-llm_model.num_ctx = 8172
+llm_model.num_ctx = 131072
 
 draft_process = ClarifyTheAsk(llm_model=llm_model)
 # print(draft_process.test_llm())
