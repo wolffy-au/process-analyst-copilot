@@ -1,4 +1,4 @@
-from typing import Any, Dict, Union, Optional
+from typing import Any, Dict, Optional
 import logging
 import json
 import os
@@ -79,7 +79,7 @@ class GeneralProcess(BaseModel):
             raise
 
 
-class OllamaLLM(LLM):
+class OllamaLLM(LLM):  # type: ignore[misc]
     """Represents a custom LLM for Ollama with context window adjustments.
 
     Attributes:
@@ -88,8 +88,6 @@ class OllamaLLM(LLM):
         num_ctx (int): The maximum context window size.
     """
 
-    agents_config = None
-    tasks_config = None
     num_ctx = 2048
 
     def get_context_window_size(self) -> int:
@@ -101,9 +99,9 @@ class OllamaLLM(LLM):
         if self.num_ctx > 2048:
             logging.warning(
                 """
-            Ollama is currently restricted to 2048 context windows by default.
-            For larger contexts, use the work-around documented here.
-            https://github.com/ollama/ollama/issues/8356#issuecomment-2579221678
+                Ollama is currently restricted to 2048 context windows by default.
+                For larger contexts, use the work-around documented here:
+                https://github.com/ollama/ollama/issues/8356#issuecomment-2579221678
                 """
             )
         return int(self.num_ctx * 0.75)
@@ -120,9 +118,11 @@ class ClarifyTheAsk:
         reviewed_file (str): Path to the reviewed process output file.
     """
 
+    CONFIG_FILES = {"agents": "agents.yaml", "tasks": "tasks.yaml"}
+
     def __init__(
         self,
-        llm_model: Optional[Union[LLM, Any]] = None,
+        llm_model: Optional[LLM] = None,
         config_dir: str = "config",
         output_dir: str = "outputs",
         draft_file: str = "1-draftprocess.md",
@@ -139,45 +139,33 @@ class ClarifyTheAsk:
             questions_file (str): Path to the questions output file.
             reviewed_file (str): Path to the reviewed process output file.
         """
-        if llm_model is None:
-            self.llm_model = LLM(model="gpt-4o-mini")
-        else:
-            self.llm_model = llm_model
+        self.llm_model: LLM = llm_model or LLM(model="gpt-4o-mini")
 
-        self.config_dir: str = Path(Path.cwd() / config_dir).as_posix()
-        self.output_dir: str = Path(Path.cwd() / output_dir).as_posix()
-        self.draft_file: str = Path(Path(self.output_dir) / draft_file).as_posix()
-        self.assumptions_file: str = Path(
-            Path(self.output_dir) / assumptions_file
-        ).as_posix()
-        self.questions_file: str = Path(
-            Path(self.output_dir) / questions_file
-        ).as_posix()
-        self.reviewed_file: str = Path(Path(self.output_dir) / reviewed_file).as_posix()
-
-        # Define file paths for YAML configurations
-        files: Dict[str, str] = {
-            "agents": "agents.yaml",
-            "tasks": "tasks.yaml",
-        }
+        # Paths
+        self.config_dir = Path(config_dir).resolve()
+        self.output_dir = Path(output_dir).resolve()
+        self.draft_file = self.output_dir / draft_file
+        self.assumptions_file = self.output_dir / assumptions_file
+        self.questions_file = self.output_dir / questions_file
+        self.reviewed_file = self.output_dir / reviewed_file
 
         # Load configurations from YAML files
-        configs = {}
-        for config_type, file_path in files.items():
-            file_path: str = Path(Path(self.config_dir) / file_path).as_posix()
-            try:
-                with open(file_path, "r") as file:
-                    configs[config_type] = yaml.safe_load(file)
-            except FileNotFoundError:
-                logging.error(f"Configuration file not found: {file_path}")
-                raise
-            except yaml.YAMLError as e:
-                logging.error(f"Error parsing YAML file: {file_path} - {e}")
-                raise
+        self.agents_config: Dict[str, Any] = self._load_yaml(
+            self.CONFIG_FILES["agents"]
+        )
+        self.tasks_config: Dict[str, Any] = self._load_yaml(self.CONFIG_FILES["tasks"])
 
-        # Assign loaded configurations to specific variables
-        self.agents_config = configs["agents"]
-        self.tasks_config = configs["tasks"]
+    def _load_yaml(self, file_name: str) -> Dict[str, Any]:
+        file_path = self.config_dir / file_name
+        try:
+            with open(file_path, "r") as file:
+                return yaml.safe_load(file)  # type: ignore[no-any-return]
+        except FileNotFoundError:
+            logging.error(f"Configuration file not found: {file_path}")
+            raise
+        except yaml.YAMLError as e:
+            logging.error(f"Error parsing YAML file: {file_path} - {e}")
+            raise
 
     def test_llm(self, content: str = "Testing 1 2 3!", role: str = "system") -> str:
         """Tests the LLM with a simple prompt.
@@ -197,7 +185,7 @@ class ClarifyTheAsk:
         Args:
             n_iterations (int): The number of iterations to run. Defaults to 3.
         """
-        if self.crew is not None:
+        if hasattr(self, "crew"):
             self.crew.test(
                 n_iterations=n_iterations, openai_model_name=self.llm_model.model
             )
@@ -209,37 +197,34 @@ class ClarifyTheAsk:
             config=self.agents_config["business_process_analyst"],
             max_iter=2,  # Default: 20 iterations
             llm=self.llm_model,
-        )  # type: ignore
+        )  # type: ignore[reportCallIssue]
 
         # Task 1.1: Draft process generation
         self.draft_process = Task(
             config=self.tasks_config["draft_process"],
             agent=self.business_process_analyst,
-            output_file=self.draft_file,
-        )  # type: ignore
+            output_file=self.draft_file.as_posix(),
+        )  # type: ignore[reportCallIssue]
 
-        self.draft_file_tool: FileReadTool = FileReadTool(file_path=self.draft_file)
+        self.draft_file_tool = FileReadTool(file_path=self.draft_file.as_posix())
         # Task 2.1: Capture assumptions
         self.capture_assumptions = Task(
             config=self.tasks_config["capture_assumptions"],
             agent=self.business_process_analyst,
-            output_file=self.assumptions_file,
+            output_file=self.assumptions_file.as_posix(),
             tools=[self.draft_file_tool],
-        )  # type: ignore
+        )  # type: ignore[reportCallIssue]
 
         # Task 3.1: Clarify details
-        self.assumptions_file_tool: FileReadTool = FileReadTool(
-            file_path=self.assumptions_file
+        self.assumptions_file_tool = FileReadTool(
+            file_path=self.assumptions_file.as_posix()
         )
         self.clarify_details = Task(
             config=self.tasks_config["clarify_details"],
             agent=self.business_process_analyst,
-            output_file=self.questions_file,
-            tools=[
-                self.assumptions_file_tool,
-                self.draft_file_tool,
-            ],
-        )  # type: ignore
+            output_file=self.questions_file.as_posix(),
+            tools=[self.draft_file_tool, self.assumptions_file_tool],
+        )  # type: ignore[reportCallIssue]
 
         # TODO include human clarification
         # TODO identify constraints
@@ -247,24 +232,23 @@ class ClarifyTheAsk:
         # TODO identify solution components impacted
 
         # Task 5.1: Review process
-        self.questions_file_tool: FileReadTool = FileReadTool(
-            file_path=self.questions_file
+        self.questions_file_tool = FileReadTool(
+            file_path=self.questions_file.as_posix()
         )
+
         self.reviewed_process = Task(
             config=self.tasks_config["reviewed_process"],
             agent=self.business_process_analyst,
-            output_file=self.reviewed_file,
+            output_file=self.reviewed_file.as_posix(),
             tools=[
                 self.draft_file_tool,
                 self.assumptions_file_tool,
                 self.questions_file_tool,
             ],
-        )  # type: ignore
+        )  # type: ignore[reportCallIssue]
 
         self.crew = Crew(
-            agents=[
-                self.business_process_analyst,
-            ],
+            agents=[self.business_process_analyst],
             tasks=[
                 self.draft_process,
                 self.capture_assumptions,
@@ -284,13 +268,15 @@ class ClarifyTheAsk:
         Returns:
             Dict[str, Any]: The results of the clarification process.
         """
-        self.input_ask = input_ask
+        if not hasattr(self, "crew"):
+            raise RuntimeError("Setup method must be called before kickoff.")
+
         results: Dict[str, Any] = self.crew.kickoff(
             inputs={
-                "input_ask": self.input_ask,
-                "draft_file": self.draft_file,
-                "assumptions_file": self.assumptions_file,
-                "questions_file": self.questions_file,
+                "input_ask": input_ask,
+                "draft_file": self.draft_file.name,
+                "assumptions_file": self.assumptions_file.name,
+                "questions_file": self.questions_file.name,
             }
         ).to_dict()
         return results
