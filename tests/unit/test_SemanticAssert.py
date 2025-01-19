@@ -63,32 +63,22 @@ def test_semantic_similarity(expected: str, actual: str, expected_result: bool) 
 
 
 def test_semantic_assert_model_loading_error(monkeypatch: MonkeyPatch) -> None:
-    def mock_spacy_load(model_name: str) -> NoReturn:
-        raise OSError("Mocked model loading error")
+    def mock_spacy_is_package(model_name: str) -> bool:
+        return False
 
-    def mock_spacy_download(model_name: str) -> None:
-        pass
-
-    monkeypatch.setattr(spacy, "load", mock_spacy_load)
-    monkeypatch.setattr(spacy.cli, "download", mock_spacy_download)
-
-    with pytest.raises(OSError, match="Mocked model loading error"):
-        semantic_assert("test", "test")
-
-
-def test_semantic_assert_model_download(monkeypatch: MonkeyPatch) -> None:
     def mock_spacy_load(model_name: str) -> Language:
         if model_name == "en_core_web_md":
-            raise OSError("Mocked model loading error")
+            raise IOError("Mocked model loading error")
         return spacy.blank("en")
 
     def mock_spacy_download(model_name: str) -> None:
         pass
 
+    monkeypatch.setattr(spacy.util, "is_package", mock_spacy_is_package)
     monkeypatch.setattr(spacy, "load", mock_spacy_load)
     monkeypatch.setattr(spacy.cli, "download", mock_spacy_download)
 
-    with pytest.raises(OSError, match="Mocked model loading error"):
+    with pytest.raises(IOError, match="Mocked model loading error"):
         semantic_assert("test", "test")
 
 

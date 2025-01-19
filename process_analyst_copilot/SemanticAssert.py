@@ -12,7 +12,6 @@ from spacy.tokens.doc import Doc
 import logging
 
 # Configure logging
-# Configure logging
 LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING").upper()
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL, logging.WARNING),
@@ -28,13 +27,16 @@ def semantic_assert(
 ) -> bool:
     """
     Compares the semantic similarity between two text strings using spaCy's 'en_core_web_md' model.
+
     Args:
         expected_output (str): The expected output text.
         actual_output (str): The actual output text.
         threshold (float, optional): The similarity threshold to determine if the texts are considered similar. Defaults to 0.5.
         verbose (bool, optional): If True, logs the similarity score. Defaults to False.
+
     Returns:
         bool: True if the similarity score is greater than or equal to the threshold, False otherwise.
+
     Raises:
         OSError: If there is an error loading the spaCy model.
     """
@@ -46,12 +48,14 @@ def semantic_assert(
                 "The 'en_core_web_md' model is not installed. Attempting to download..."
             )
             spacy.cli.download("en_core_web_md")  # type: ignore
-        nlp = spacy.load("en_core_web_md")
-    except OSError as e:
-        raise OSError(f"Error loading spaCy model after download attempt: {e}")
+        nlp: Language = spacy.load("en_core_web_md")
+    except IOError as e:
+        raise IOError(f"Error loading spaCy model after download attempt: {e}")
 
     # Process the texts
     def clean_text(text: str) -> str:
+        """Remove non-alphanumeric characters and normalize spacing."""
+        # return " ".join(char if char.isalnum() else " " for char in text).strip()
         return "".join(char if char.isalnum() else " " for char in text)
 
     expected_output = clean_text(expected_output)
@@ -61,9 +65,14 @@ def semantic_assert(
 
     # Calculate the similarity
     similarity_score: float = expected_embedding.similarity(actual_embedding)
-    if similarity_score != 0.0:
-        # Transform the similarity score to follow an exponential curve
+
+    # Ensure similarity_score is valid for transformation
+    if similarity_score > 0:
+        # Apply exponential transformation
         similarity_score = math.log(similarity_score**4) + 1
+    else:
+        logging.warning("Similarity score is zero or negative; check the input texts.")
+        similarity_score = 0.0
 
     if verbose:
         logging.info(f"Similarity score: {similarity_score}")
