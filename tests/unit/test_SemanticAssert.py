@@ -1,4 +1,3 @@
-from typing import NoReturn
 import pytest
 from pytest import MonkeyPatch
 import spacy
@@ -67,9 +66,7 @@ def test_semantic_assert_model_loading_error(monkeypatch: MonkeyPatch) -> None:
         return False
 
     def mock_spacy_load(model_name: str) -> Language:
-        if model_name == "en_core_web_md":
-            raise IOError("Mocked model loading error")
-        return spacy.blank("en")
+        raise IOError("Mocked model loading error")
 
     def mock_spacy_download(model_name: str) -> None:
         pass

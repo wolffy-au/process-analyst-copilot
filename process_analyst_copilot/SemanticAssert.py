@@ -48,7 +48,7 @@ def semantic_assert(
                 "The 'en_core_web_md' model is not installed. Attempting to download..."
             )
             spacy.cli.download("en_core_web_md")  # type: ignore
-        nlp: Language = spacy.load("en_core_web_md")
+        nlp = spacy.load("en_core_web_md")
     except IOError as e:
         raise IOError(f"Error loading spaCy model after download attempt: {e}")
 
