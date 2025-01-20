@@ -1,12 +1,18 @@
 **How to rebase and repoint a feature branch on develop branch**
-
-
 git checkout feature-processqa
 git pull --rebase
 git rebase develop
 git push --force-with-lease
 
-git checkout feature-structuredprocess
-git pull --rebase
-git rebase develop
+** Merge a branch back into develop **
+git checkout feature-processqa
 git push --force-with-lease
+git rebase origin/develop
+git rebase -i origin/develop
+git push --force-with-lease
+git checkout develop
+git merge feature-processqa
+git push --force-with-lease
+git push -d origin/feature-processqa feature-processqa
+git branch -d feature-processqa 
+

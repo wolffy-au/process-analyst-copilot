@@ -1,3 +1,12 @@
+TODO
+Fix Behave tests
+Finish structuredprocess
+Human in the loop
+Identify constraints
+Identify contradictions
+Identify solution components and impacts
+
+-------------------------------
 Below is a task description and expected output. Can you improve these to be articulate, clearer and more comprehensive.
 
 capture_assumptions:
@@ -8,9 +17,6 @@ capture_assumptions:
     Present a well-organized, structured list of clear, articulate assumptions. Each assumption
     should capture an identified assumption, ambiguity, or gap in the draft process, including which process steps they are related to and ensuring that no 
     critical details are overlooked and clarified for accurate and complete process documentation.
-
-
-
 
 
 Below is a task description and expected output. Can you consolidate without losing any detail.
@@ -40,7 +46,6 @@ overlooked.
     * The related process step(s) to which the assumption applies.
     *Additional context to explain the potential impact or importance of clarifying the assumption.
     Ensure the list is thorough and leaves no critical detail or ambiguity unaddressed, laying the groundwork for accurate and complete process documentation.
-
 
 
 Below is a task description and expected output, specifically for taking a draft process, a list of assumptions and responses to questions from a user to improve and re-engineer the draft process. Can you suggest any improvements to be more articulate, clearer and more comprehensive without repeating any content between task description and expected output.
@@ -92,13 +97,9 @@ clarify_details:
   expected_output: >
     Provide a well-organized list of questions addressing the assumptions identified during analysis.
 `
-
 ---------------------
 
-
 I want to create unit tests for the above agent and tasks. Can you suggest a good way to test these in python, either using pytest unit testing or behave gherkin testing methods?
-
-
 
 To effectively test your AI agent and tasks in Python, you can utilize either pytest for unit testing or behave
 (Gherkin) for behavior-driven development (BDD). Here's how each approach might be applied:
