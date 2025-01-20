@@ -2,7 +2,7 @@ import pytest
 from dotenv import load_dotenv, find_dotenv
 from crewai import Task, Crew
 from crewai_tools import FileReadTool
-from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
+from process_analyst_copilot import ClarifyTheAsk
 from process_analyst_copilot.SemanticAssert import semantic_assert
 
 
@@ -10,10 +10,13 @@ from process_analyst_copilot.SemanticAssert import semantic_assert
 def clarify_the_ask() -> ClarifyTheAsk:
 
     # # OpenAI setup for pytest
+    # from dotenv import load_dotenv, find_dotenv
     # load_dotenv(find_dotenv())
     # return ClarifyTheAsk()
 
     # Ollama setup for pytest
+    from process_analyst_copilot import OllamaLLM
+
     llm_model = OllamaLLM(
         model="ollama/llama3.1:8b",
         temperature=0.3,
@@ -185,8 +188,6 @@ def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
     clarify_the_ask.draft_file_tool = FileReadTool(file_path=draft_file)
     assumptions_file = "doctest_2_assumptions.md"
     clarify_the_ask.assumptions_file_tool = FileReadTool(file_path=assumptions_file)
-    questions_file = "doctest_3_questions.md"
-    clarify_the_ask.questions_file_tool = FileReadTool(file_path=questions_file)
 
     clarify_the_ask.reviewed_process.output_file = None
     crew = Crew(
@@ -197,7 +198,6 @@ def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
         inputs={
             "draft_file": draft_file,
             "assumptions_file": assumptions_file,
-            "questions_file": questions_file,
         }
     ).raw
     assert semantic_assert(
