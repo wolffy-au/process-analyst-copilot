@@ -15,6 +15,12 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
+# FIXME: pydantic_core._pydantic_core.ValidationError: 1 validation error for Crew Value error, Please provide an
+# OpenAI API key.
+# Need to set false OPENAI_API_KEY to a non-empty string to avoid this error using memory=True on your Crew()
+if not os.environ.get("OPENAI_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = "N/A"
+
 
 class StepTask(BaseModel):
     """Represents a task within a process step.
@@ -119,6 +125,7 @@ class ClarifyTheAsk:
     """
 
     CONFIG_FILES = {"agents": "agents.yaml", "tasks": "tasks.yaml"}
+    embedder: dict[Any, Any] | None = None
 
     def __init__(
         self,
@@ -199,6 +206,22 @@ class ClarifyTheAsk:
             llm=self.llm_model,
         )  # type: ignore[reportCallIssue]
 
+        # Agent: Certified Process Quality Assurance
+        self.cpqa_bok_tool: FileReadTool = FileReadTool(
+            file_path=Path(
+                # Sample reference doc
+                Path(self.config_dir)
+                / "references"
+                / "cpqa-cert-insert.pdf"
+            ).as_posix()
+        )
+        self.process_analyst_quality_assurance = Agent(
+            config=self.agents_config["process_analyst_quality_assurance"],
+            max_iter=2,  # Default: 20 iterations
+            llm=self.llm_model,
+            tools=[self.cpqa_bok_tool],
+        )  # type: ignore
+
         # Task 1.1: Draft process generation
         self.draft_process = Task(
             config=self.tasks_config["draft_process"],
@@ -247,14 +270,32 @@ class ClarifyTheAsk:
             ],
         )  # type: ignore[reportCallIssue]
 
+        # Task 5.2 Quality assure process
+        self.reviewed_file_tool: FileReadTool = FileReadTool(
+            file_path=self.reviewed_file.as_posix()
+        )
+        self.quality_assurance_review = Task(
+            config=self.tasks_config["quality_assurance_review"],
+            agent=self.process_analyst_quality_assurance,
+            tools=[
+                self.reviewed_file_tool,
+            ],
+        )  # type: ignore
+
         self.crew = Crew(
-            agents=[self.business_process_analyst],
+            agents=[
+                self.business_process_analyst,
+                self.process_analyst_quality_assurance,
+            ],
             tasks=[
                 self.draft_process,
                 self.capture_assumptions,
                 self.clarify_details,
                 self.reviewed_process,
+                self.quality_assurance_review,
             ],
+            memory=True,
+            embedder=self.embedder,
             # cache=False,
             verbose=True,
         )
@@ -277,6 +318,7 @@ class ClarifyTheAsk:
                 "draft_file": self.draft_file.name,
                 "assumptions_file": self.assumptions_file.name,
                 "questions_file": self.questions_file.name,
+                "reviewed_file": self.reviewed_file.name,
             }
         ).to_dict()
         return results

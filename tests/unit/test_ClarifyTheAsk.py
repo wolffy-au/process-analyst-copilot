@@ -1,4 +1,5 @@
 import pytest
+from dotenv import load_dotenv, find_dotenv
 from crewai import Task, Crew
 from crewai_tools import FileReadTool
 from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
@@ -7,6 +8,12 @@ from process_analyst_copilot.SemanticAssert import semantic_assert
 
 @pytest.fixture
 def clarify_the_ask() -> ClarifyTheAsk:
+
+    # # OpenAI setup for pytest
+    # load_dotenv(find_dotenv())
+    # return ClarifyTheAsk()
+
+    # Ollama setup for pytest
     llm_model = OllamaLLM(
         model="ollama/llama3.1:8b",
         temperature=0.3,
@@ -15,7 +22,6 @@ def clarify_the_ask() -> ClarifyTheAsk:
     # Ollama default context window
     # 2048 + 1 to trigger OllamaLLM context window warning
     llm_model.num_ctx = 2048 + 1
-
     return ClarifyTheAsk(llm_model=llm_model)
 
 

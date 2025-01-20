@@ -1,7 +1,6 @@
 draft_process:
   description: >
-    Develop a detailed workflow outlining the necessary actions to accomplish the task specified in:
-    `{input_ask}`
+    Develop a detailed workflow outlining the necessary actions to accomplish the task specified in: `{input_ask}`
     Break the task into clear, logical, and sequential steps, ensuring the process is well-structured, actionable, and 
     accounts for any dependencies, decision points, or notable considerations.
   expected_output: >
@@ -63,3 +62,15 @@ reviewed_process:
       - **Assumption:** For this substep the assumed value for assumption ... will be used.
       - **Assumption:** For this substep the assumed value for assumption ... will be used.
       3: Substep description ...
+
+quality_assurance_review:
+  description: >
+    Review the process drafted by the Business Process Analyst `{reviewed_file}`. Ensure that the process
+    is comprehensive, accurate, and adheres to the high-quality CPQA standards. Verify that 
+    all parts of the original user's request `{input_ask}` have been addressed thoroughly. Check for
+    references and sources used to find the information, ensuring the response is well-supported and leaves no
+    ambiguity.
+  expected_output: >
+    A final, detailed, and informative process ready to be sent to the user. This response should fully address
+    the user's inquiry, incorporating all releven feedback and improvements.
+    
