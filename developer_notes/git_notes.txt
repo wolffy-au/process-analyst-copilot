@@ -5,12 +5,8 @@ git checkout feature-processqa
 git pull --rebase
 git rebase develop
 git push --force-with-lease
-git update-ref -m "reset: Reset feature-processqa to a7a4b6d75c828d4f4a725ff0c4c75b38c0e5eeff" refs/heads/feature-processqa a7a4b6d75c828d4f4a725ff0c4c75b38c0e5eeff
-git push --force-with-lease
 
-git checkout feature-structureprocess
+git checkout feature-structuredprocess
 git pull --rebase
 git rebase develop
-git push --force-with-lease
-git update-ref -m "reset: Reset feature-structureprocess to a7a4b6d75c828d4f4a725ff0c4c75b38c0e5eeff" refs/heads/feature-structureprocess a7a4b6d75c828d4f4a725ff0c4c75b38c0e5eeff
 git push --force-with-lease

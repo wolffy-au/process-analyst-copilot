@@ -203,3 +203,41 @@ def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
     assert semantic_assert(
         expected_output, result
     ), f"Expected {expected_output}, but got {result}"
+
+
+# Example test case for `quality_assurance_review`
+def test_quality_assurance_review(clarify_the_ask: ClarifyTheAsk) -> None:
+    clarify_the_ask.setup()
+
+    expected_output = """
+    4. **Steep and Infuse**
+        * Substep 4.1: Allow the tea to steep for the recommended time (usually 2-5 minutes, depending on personal preference).
+        - **Assumption:** We assume that the user knows their preferred steeping time.
+        * Substep 4.2: If using loose-leaf tea, consider adding a strainer over your cup to catch leaves.
+    """
+
+    input_ask = "The simplest way to make a cup of tea?"
+    draft_file = "doctest_1_draftprocess.md"
+    clarify_the_ask.draft_file_tool = FileReadTool(file_path=draft_file)
+    assumptions_file = "doctest_2_assumptions.md"
+    clarify_the_ask.assumptions_file_tool = FileReadTool(file_path=assumptions_file)
+    reviewed_file = "doctest_4_reviewedprocess.md"
+    clarify_the_ask.reviewed_file_tool = FileReadTool(file_path=reviewed_file)
+
+    clarify_the_ask.reviewed_process.output_file = None
+    crew = Crew(
+        agents=[
+            clarify_the_ask.business_process_analyst,
+            clarify_the_ask.process_analyst_quality_assurance,
+        ],
+        tasks=[clarify_the_ask.quality_assurance_review],
+    )
+    result: str = crew.kickoff(
+        inputs={
+            "input_ask": input_ask,
+            "reviewed_file": reviewed_file,
+        }
+    ).raw
+    assert semantic_assert(
+        expected_output, result
+    ), f"Expected {expected_output}, but got {result}"
