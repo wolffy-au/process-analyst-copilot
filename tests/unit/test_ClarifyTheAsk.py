@@ -1,6 +1,5 @@
 import pytest
-from dotenv import load_dotenv, find_dotenv
-from crewai import Task, Crew
+from crewai import Agent, Task, Crew
 from crewai_tools import FileReadTool
 from process_analyst_copilot import ClarifyTheAsk
 from process_analyst_copilot.SemanticAssert import semantic_assert
@@ -9,28 +8,34 @@ from process_analyst_copilot.SemanticAssert import semantic_assert
 @pytest.fixture
 def clarify_the_ask() -> ClarifyTheAsk:
 
-    # # OpenAI setup for pytest
-    # from dotenv import load_dotenv, find_dotenv
-    # load_dotenv(find_dotenv())
-    # return ClarifyTheAsk()
+    # OpenAI setup for pytest
+    from dotenv import load_dotenv, find_dotenv
 
-    # Ollama setup for pytest
-    from process_analyst_copilot import OllamaLLM
+    load_dotenv(find_dotenv())
+    return ClarifyTheAsk()
 
-    llm_model = OllamaLLM(
-        model="ollama/llama3.1:8b",
-        temperature=0.3,
-        api_base="http://localhost:11434",
-    )
-    # Ollama default context window
-    # 2048 + 1 to trigger OllamaLLM context window warning
-    llm_model.num_ctx = 2048 + 1
-    return ClarifyTheAsk(llm_model=llm_model)
+    # # Ollama setup for pytest
+    # from process_analyst_copilot import OllamaLLM
+
+    # llm_model = OllamaLLM(
+    #     model="ollama/llama3.1:8b",
+    #     temperature=0.3,
+    #     api_base="http://localhost:11434",
+    # )
+    # # Ollama default context window
+    # # 2048 + 1 to trigger OllamaLLM context window warning
+    # llm_model.num_ctx = 2048 + 1
+    # return ClarifyTheAsk(llm_model=llm_model)
 
 
 def test_llm_ctx_warn(clarify_the_ask: ClarifyTheAsk) -> None:
     result: int = clarify_the_ask.llm_model.get_context_window_size()
-    expected_output: int = int(2049 * 0.75)
+
+    expected_output: int
+    if clarify_the_ask.llm_model.model == "ollama/llama3.1:8b":
+        expected_output = int(2049 * 0.75)
+    else:
+        expected_output = int(128000 * 0.75)
 
     # Then assert that the result meets your expected output
     assert expected_output == result, f"Expected {expected_output}, but got {result}"
@@ -60,30 +65,36 @@ def test_llm_response(clarify_the_ask: ClarifyTheAsk) -> None:
 
 
 def test_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup()
+    clarify_the_ask.setup_agents()
 
     # Given some input data
-    input_data = "In one word what is the colour of the sky?"
+    input_data = "Describe the colour of the sky"
     expected_output = "blue"
 
-    # When calling your agent's method or task processing logic
-    result: str = clarify_the_ask.business_process_analyst.execute_task(
-        Task(
-            description=input_data,
-            expected_output="A single word",
-            agent=clarify_the_ask.business_process_analyst,
-        )
-    )
+    agents: list[Agent] = [
+        clarify_the_ask.business_process_analyst,
+        clarify_the_ask.process_analyst_quality_assurance,
+    ]
 
-    # Then assert that the result meets your expected output
-    assert semantic_assert(
-        expected_output, result
-    ), f"Expected {expected_output}, but got {result}"
+    for agent in agents:
+        # When calling your agent's method or task processing logic
+        result: str = agent.execute_task(
+            Task(
+                description=input_data,
+                expected_output="One word only",
+                max_retries=0,
+            )
+        )
+        # Then assert that the result meets your expected output
+        assert semantic_assert(
+            expected_output, result
+        ), f"Expected {expected_output}, but got {result}"
 
 
 # Example test case for `draft_process`
 def test_draft_process(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup()
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_draft_process()
 
     # Given some input data
     input_ask = "The simplest way to make a cup of tea?"
@@ -113,7 +124,8 @@ def test_draft_process(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `capture_assumptions`
 def test_capture_assumptions(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup()
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_capture_assumptions()
 
     expected_output = """
     - Assumes a structured approach to making good tea.
@@ -141,7 +153,8 @@ def test_capture_assumptions(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `clarify_details`
 def test_clarify_details(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup()
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_clarify_details()
 
     expected_output = """
     1. What is the ideal water temperature for brewing black tea?
@@ -173,7 +186,8 @@ def test_clarify_details(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `reviewed_process`
 def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup()
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_reviewed_process()
 
     expected_output = """
     Step 4. **Add Tea Leaves/Bag**
@@ -207,7 +221,8 @@ def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `quality_assurance_review`
 def test_quality_assurance_review(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup()
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_quality_assurance_review()
 
     expected_output = """
     4. **Steep and Infuse**
@@ -224,7 +239,6 @@ def test_quality_assurance_review(clarify_the_ask: ClarifyTheAsk) -> None:
     reviewed_file = "doctest_4_reviewedprocess.md"
     clarify_the_ask.reviewed_file_tool = FileReadTool(file_path=reviewed_file)
 
-    clarify_the_ask.reviewed_process.output_file = None
     crew = Crew(
         agents=[
             clarify_the_ask.business_process_analyst,

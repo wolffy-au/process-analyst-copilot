@@ -1,4 +1,3 @@
-from typing import Any, Dict
 from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
 
 # FIXME Ollama is currently restricted to 2048 context windows
@@ -20,7 +19,5 @@ draft_process.embedder = {"provider": "ollama", "config": {"model": "llama3.1:8b
 
 # print(draft_process.test_llm())
 draft_process.setup()
-results: Dict[str, Any] = draft_process.kickoff(
-    input_ask="The simplest way to make a cup of tea?"
-)
+results = draft_process.kickoff(input_ask="The simplest way to make a cup of tea?")
 print("See the outputs directory for outputs.")

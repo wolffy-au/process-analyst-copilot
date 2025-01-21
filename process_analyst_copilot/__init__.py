@@ -186,18 +186,7 @@ class ClarifyTheAsk:
         """
         return str(self.llm_model.call([{"role": role, "content": content}]))
 
-    def test_crew(self, n_iterations: int = 3) -> None:
-        """Tests the Crew instance with the given number of iterations.
-
-        Args:
-            n_iterations (int): The number of iterations to run. Defaults to 3.
-        """
-        if hasattr(self, "crew"):
-            self.crew.test(
-                n_iterations=n_iterations, openai_model_name=self.llm_model.model
-            )
-
-    def setup(self) -> None:
+    def setup_agents(self) -> None:
         """Sets up agents and tasks for the clarification process."""
         # Agent: Busness Process Analyst
         self.business_process_analyst = Agent(
@@ -221,7 +210,18 @@ class ClarifyTheAsk:
             llm=self.llm_model,
             tools=[self.cpqa_bok_tool],
         )  # type: ignore
+        self.draft_file_tool = FileReadTool(file_path=self.draft_file.as_posix())
+        self.assumptions_file_tool = FileReadTool(
+            file_path=self.assumptions_file.as_posix()
+        )
+        self.questions_file_tool = FileReadTool(
+            file_path=self.questions_file.as_posix()
+        )
+        self.reviewed_file_tool: FileReadTool = FileReadTool(
+            file_path=self.reviewed_file.as_posix()
+        )
 
+    def setup_draft_process(self) -> None:
         # Task 1.1: Draft process generation
         self.draft_process = Task(
             config=self.tasks_config["draft_process"],
@@ -229,7 +229,7 @@ class ClarifyTheAsk:
             output_file=self.draft_file.as_posix(),
         )  # type: ignore[reportCallIssue]
 
-        self.draft_file_tool = FileReadTool(file_path=self.draft_file.as_posix())
+    def setup_capture_assumptions(self) -> None:
         # Task 2.1: Capture assumptions
         self.capture_assumptions = Task(
             config=self.tasks_config["capture_assumptions"],
@@ -238,10 +238,8 @@ class ClarifyTheAsk:
             tools=[self.draft_file_tool],
         )  # type: ignore[reportCallIssue]
 
+    def setup_clarify_details(self) -> None:
         # Task 3.1: Clarify details
-        self.assumptions_file_tool = FileReadTool(
-            file_path=self.assumptions_file.as_posix()
-        )
         self.clarify_details = Task(
             config=self.tasks_config["clarify_details"],
             agent=self.business_process_analyst,
@@ -249,16 +247,13 @@ class ClarifyTheAsk:
             tools=[self.draft_file_tool, self.assumptions_file_tool],
         )  # type: ignore[reportCallIssue]
 
-        # TODO include human clarification
-        # TODO identify constraints
-        # TODO identify contradictions
-        # TODO identify solution components impacted
+    # TODO include human clarification
+    # TODO identify constraints
+    # TODO identify contradictions
+    # TODO identify solution components impacted
 
+    def setup_reviewed_process(self) -> None:
         # Task 5.1: Review process
-        self.questions_file_tool = FileReadTool(
-            file_path=self.questions_file.as_posix()
-        )
-
         self.reviewed_process = Task(
             config=self.tasks_config["reviewed_process"],
             agent=self.business_process_analyst,
@@ -269,10 +264,8 @@ class ClarifyTheAsk:
             ],
         )  # type: ignore[reportCallIssue]
 
+    def setup_quality_assurance_review(self) -> None:
         # Task 5.2 Quality assure process
-        self.reviewed_file_tool: FileReadTool = FileReadTool(
-            file_path=self.reviewed_file.as_posix()
-        )
         self.quality_assurance_review = Task(
             config=self.tasks_config["quality_assurance_review"],
             agent=self.process_analyst_quality_assurance,
@@ -281,6 +274,7 @@ class ClarifyTheAsk:
             ],
         )  # type: ignore
 
+    def setup_crew(self) -> None:
         self.crew = Crew(
             agents=[
                 self.business_process_analyst,
@@ -299,7 +293,17 @@ class ClarifyTheAsk:
             verbose=True,
         )
 
-    def kickoff(self, input_ask: str) -> Dict[str, Any]:
+    def setup(self) -> None:
+        """Sets up the agents, tasks, and crew for the clarification process."""
+        self.setup_agents()
+        self.setup_draft_process()
+        self.setup_capture_assumptions()
+        self.setup_clarify_details()
+        self.setup_reviewed_process()
+        self.setup_quality_assurance_review()
+        self.setup_crew()
+
+    def kickoff(self, input_ask: str) -> str:
         """Kicks off the clarification process with the given input.
 
         Args:
@@ -311,7 +315,7 @@ class ClarifyTheAsk:
         if not hasattr(self, "crew"):
             raise RuntimeError("Setup method must be called before kickoff.")
 
-        results: Dict[str, Any] = self.crew.kickoff(
+        results: str = self.crew.kickoff(
             inputs={
                 "input_ask": input_ask,
                 "draft_file": self.draft_file.name,
@@ -319,5 +323,16 @@ class ClarifyTheAsk:
                 "questions_file": self.questions_file.name,
                 "reviewed_file": self.reviewed_file.name,
             }
-        ).to_dict()
+        ).raw
         return results
+
+    def test_crew(self, n_iterations: int = 3) -> None:
+        """Tests the Crew instance with the given number of iterations.
+
+        Args:
+            n_iterations (int): The number of iterations to run. Defaults to 3.
+        """
+        if hasattr(self, "crew"):
+            self.crew.test(
+                n_iterations=n_iterations, openai_model_name=self.llm_model.model
+            )
