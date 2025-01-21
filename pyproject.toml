@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "process_analyst_copilot"
-version = "0.1.1" # This is not used - version is controlled by poetry_dynamic_versioning
+version = "0.2.0" # This is not used - version is controlled by poetry_dynamic_versioning
 description = "Hellow World deployment test"
 authors = ["Stephan Borg <wolffborg1@gmail.com>"]
 readme = "README.md"

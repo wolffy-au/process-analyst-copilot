@@ -16,3 +16,15 @@ git push --force-with-lease
 git push -d origin/feature-processqa feature-processqa
 git branch -d feature-processqa 
 
+** Merge develop back into main **
+
+
+git checkout develop
+git push --force-with-lease
+git rebase origin/main
+git rebase -i origin/main
+git push --force-with-lease
+git checkout main
+git merge develop
+git push --force-with-lease
+
