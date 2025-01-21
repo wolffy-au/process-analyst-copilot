@@ -17,8 +17,9 @@ git push -d origin/feature-processqa feature-processqa
 git branch -d feature-processqa 
 
 ** Merge develop back into main **
-
-
+poetry run pdoc --output-dir build/pdoc process_analyst_copilot
+poetry run cz bump --changelog --yes
+poetry build
 git checkout develop
 git push --force-with-lease
 git rebase origin/main
