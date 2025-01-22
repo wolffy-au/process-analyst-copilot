@@ -1,4 +1,7 @@
 import pytest
+from pytest import MonkeyPatch
+from pathlib import Path
+import yaml
 from crewai import Agent, Task, Crew
 from crewai_tools import FileReadTool
 from process_analyst_copilot import ClarifyTheAsk
@@ -89,6 +92,50 @@ def test_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
         assert semantic_assert(
             expected_output, result
         ), f"Expected {expected_output}, but got {result}"
+
+
+def test_load_yaml_success(monkeypatch: MonkeyPatch, tmp_path: Path) -> None:
+    # Create a temporary YAML file
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    file_name = "test.yaml"
+    file_path = config_dir / file_name
+    file_path.write_text("key: value")
+
+    # Mock the config_dir attribute
+    clarify = ClarifyTheAsk()
+    monkeypatch.setattr(clarify, "config_dir", config_dir)
+
+    # Test the _load_yaml method
+    result = clarify._load_yaml(file_name)
+    assert result == {"key": "value"}
+
+
+def test_load_yaml_file_not_found(monkeypatch: MonkeyPatch) -> None:
+    # Mock the config_dir attribute
+    clarify = ClarifyTheAsk()
+    monkeypatch.setattr(clarify, "config_dir", Path("/non/existent/path"))
+
+    # Test the _load_yaml method
+    with pytest.raises(FileNotFoundError):
+        clarify._load_yaml("non_existent.yaml")
+
+
+def test_load_yaml_parsing_error(monkeypatch: MonkeyPatch, tmp_path: Path) -> None:
+    # Create a temporary invalid YAML file
+    config_dir = tmp_path / "config"
+    config_dir.mkdir()
+    file_name = "invalid.yaml"
+    file_path = config_dir / file_name
+    file_path.write_text("key: : value")
+
+    # Mock the config_dir attribute
+    clarify = ClarifyTheAsk()
+    monkeypatch.setattr(clarify, "config_dir", config_dir)
+
+    # Test the _load_yaml method
+    with pytest.raises(yaml.YAMLError):
+        clarify._load_yaml(file_name)
 
 
 # Example test case for `draft_process`
