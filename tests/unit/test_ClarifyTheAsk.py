@@ -12,11 +12,11 @@ from process_analyst_copilot.utils import OllamaLLM, llm_call
 @pytest.fixture
 def clarify_the_ask() -> ClarifyTheAsk:
 
-    # OpenAI setup for pytest
-    from dotenv import load_dotenv, find_dotenv
+    # # OpenAI setup for pytest
+    # from dotenv import load_dotenv, find_dotenv
 
-    load_dotenv(find_dotenv())
-    return ClarifyTheAsk()
+    # load_dotenv(find_dotenv())
+    # return ClarifyTheAsk()
 
     # # Ollama setup for pytest
     # llm_model = OllamaLLM(
@@ -202,6 +202,28 @@ def test_draft_process(clarify_the_ask: ClarifyTheAsk) -> None:
     ), f"Expected {expected_output}, but got {result}"
 
 
+# FIXME
+# Example test case for `draft_process_structured`
+def test_draft_process_structured(clarify_the_ask: ClarifyTheAsk) -> None:
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_draft_process_structured()
+
+    expected_output = """
+    """
+
+    draft_file = "doctest_1_draftprocess.md"
+    clarify_the_ask.draft_file_tool = FileReadTool(file_path=draft_file)
+
+    clarify_the_ask.draft_process_structured.output_file = None
+    crew = Crew(
+        agents=[clarify_the_ask.business_process_analyst],
+        tasks=[clarify_the_ask.draft_process_structured],
+    )
+    result: str = crew.kickoff().raw
+    assert expected_output == result, f"Expected {expected_output}, but got {result}"
+
+
+# FIXME
 # Example test case for `capture_assumptions`
 def test_capture_assumptions(clarify_the_ask: ClarifyTheAsk) -> None:
     clarify_the_ask.setup_bpa_agent()
