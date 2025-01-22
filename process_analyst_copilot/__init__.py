@@ -1,11 +1,11 @@
 from typing import Any, Dict, Optional
-from typing import Any, Dict, Optional
 import logging
 import os
 from pathlib import Path
 import yaml
 from crewai import Agent, Task, Crew, LLM
-from crewai_tools import FileReadTool, PDFSearchTool
+from crewai_tools import SerperDevTool, FileReadTool, PDFSearchTool
+from process_analyst_copilot.data import GeneralProcess, GeneralProcessAssumptions
 
 # Configure logging
 LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING").upper()
@@ -92,8 +92,13 @@ class ClarifyTheAsk:
         )  # type: ignore[reportCallIssue]
 
         self.draft_file_tool = FileReadTool(file_path=self.draft_file.as_posix())
+        self.draft_file_json: str = self.draft_file.as_posix().replace(".md", ".json")
+        self.draft_json_tool = FileReadTool(file_path=self.draft_file_json)
         self.assumptions_file_tool = FileReadTool(
             file_path=self.assumptions_file.as_posix()
+        )
+        self.assumptions_file_json: str = self.assumptions_file.as_posix().replace(
+            ".md", ".json"
         )
         self.questions_file_tool = FileReadTool(
             file_path=self.questions_file.as_posix()
@@ -171,12 +176,11 @@ class ClarifyTheAsk:
 
     def setup_draft_process_structured(self) -> None:
         # Task 1.2: Convert draft process into structured data
-        draft_file_json: str = self.draft_file.as_posix().replace(".md", ".json")
         self.draft_process_structured = Task(
             config=self.tasks_config["draft_process_structured"],
             agent=self.business_process_analyst,
             output_json=GeneralProcess,
-            output_file=draft_file_json,
+            output_file=self.draft_file_json,
             tools=[self.draft_file_tool],
         )  # type: ignore
 
@@ -185,8 +189,9 @@ class ClarifyTheAsk:
         self.capture_assumptions = Task(
             config=self.tasks_config["capture_assumptions"],
             agent=self.business_process_analyst,
-            output_file=self.assumptions_file.as_posix(),
-            tools=[self.draft_file_tool],
+            output_json=GeneralProcessAssumptions,
+            output_file=self.assumptions_file_json,
+            tools=[self.draft_json_tool],
         )  # type: ignore[reportCallIssue]
 
     def setup_clarify_details(self) -> None:
@@ -236,9 +241,9 @@ class ClarifyTheAsk:
                 self.draft_process,
                 self.draft_process_structured,
                 self.capture_assumptions,
-                self.clarify_details,
-                self.reviewed_process,
-                self.quality_assurance_review,
+                # self.clarify_details,
+                # self.reviewed_process,
+                # self.quality_assurance_review,
             ],
             memory=True,
             embedder=self.embedder,
@@ -251,6 +256,7 @@ class ClarifyTheAsk:
         self.setup_bpa_agent()
         self.setup_pqa_agent()
         self.setup_draft_process()
+        self.setup_draft_process_structured()
         self.setup_capture_assumptions()
         self.setup_clarify_details()
         self.setup_reviewed_process()
