@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import yaml
 from crewai import Agent, Task, Crew, LLM
-from crewai_tools import FileReadTool, SerperDevTool
+from crewai_tools import SerperDevTool, FileReadTool, PDFSearchTool
 
 # Configure logging
 LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING").upper()
@@ -126,8 +126,8 @@ class ClarifyTheAsk:
         """
         return str(self.llm_model.call([{"role": role, "content": content}]))
 
-    def setup_agents(self) -> None:
-        """Sets up agents and tasks for the clarification process."""
+    def setup_bpa_agent(self) -> None:
+        """Sets up Busness Process Analyst agent."""
         # Agent: Busness Process Analyst
         self.business_process_analyst = Agent(
             config=self.agents_config["business_process_analyst"],
@@ -135,21 +135,6 @@ class ClarifyTheAsk:
             llm=self.llm_model,
         )  # type: ignore[reportCallIssue]
 
-        # Agent: Certified Process Quality Assurance
-        self.cpqa_bok_tool: FileReadTool = FileReadTool(
-            file_path=Path(
-                # Sample reference doc
-                Path(self.config_dir)
-                / "references"
-                / "cpqa-cert-insert.pdf"
-            ).as_posix()
-        )
-        self.process_analyst_quality_assurance = Agent(
-            config=self.agents_config["process_analyst_quality_assurance"],
-            max_iter=2,  # Default: 20 iterations
-            llm=self.llm_model,
-            tools=[self.cpqa_bok_tool],
-        )  # type: ignore
         self.serper_tool = SerperDevTool()
         self.draft_file_tool = FileReadTool(file_path=self.draft_file.as_posix())
         self.assumptions_file_tool = FileReadTool(
@@ -161,6 +146,28 @@ class ClarifyTheAsk:
         self.reviewed_file_tool: FileReadTool = FileReadTool(
             file_path=self.reviewed_file.as_posix()
         )
+
+    def setup_pqa_agent(self) -> None:
+        """Sets up Certified  Quality Process Assurance agent."""
+        # Agent: Certified  Quality Process Assurance
+        self.cpqa_bok_tool: PDFSearchTool = PDFSearchTool(
+            pdf=Path(
+                # Sample reference doc
+                Path(self.config_dir)
+                / "references"
+                / "certified-quality-process-analyst-handbook.pdf"
+            ).as_posix(),
+            config=dict(
+                llm=self.embedder,
+                embedder=self.embedder,
+            ),
+        )
+        self.process_analyst_quality_assurance = Agent(
+            config=self.agents_config["process_analyst_quality_assurance"],
+            max_iter=2,  # Default: 20 iterations
+            llm=self.llm_model,
+            tools=[self.cpqa_bok_tool],
+        )  # type: ignore
 
     def setup_draft_process(self) -> None:
         # Task 1.1: Draft process generation
@@ -237,7 +244,8 @@ class ClarifyTheAsk:
 
     def setup(self) -> None:
         """Sets up the agents, tasks, and crew for the clarification process."""
-        self.setup_agents()
+        self.setup_bpa_agent()
+        self.setup_pqa_agent()
         self.setup_draft_process()
         self.setup_capture_assumptions()
         self.setup_clarify_details()
