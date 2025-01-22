@@ -28,7 +28,9 @@ def clarify_the_ask() -> ClarifyTheAsk:
     # # Ollama default context window
     # # 2048 + 1 to trigger OllamaLLM context window warning
     # llm_model.num_ctx = 2048 + 1
-    # return ClarifyTheAsk(llm_model=llm_model)
+    # x: ClarifyTheAsk = ClarifyTheAsk(llm_model=llm_model)
+    # x.embedder = {"provider": "ollama", "config": {"model": "llama3.1:8b"}}
+    # return x
 
 
 def test_llm_ctx_warn(clarify_the_ask: ClarifyTheAsk) -> None:
@@ -67,31 +69,50 @@ def test_llm_response(clarify_the_ask: ClarifyTheAsk) -> None:
     ), f"Expected {expected_output}, but got {result}"
 
 
-def test_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_agents()
+def test_bpa_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
+    clarify_the_ask.setup_bpa_agent()
 
     # Given some input data
-    input_data = "Describe the colour of the sky"
-    expected_output = "blue"
+    input_data = "What is the first step to improve an existing process?"
+    expected_output = "Requirement gathering"
 
-    agents: list[Agent] = [
-        clarify_the_ask.business_process_analyst,
-        clarify_the_ask.process_analyst_quality_assurance,
-    ]
-
-    for agent in agents:
-        # When calling your agent's method or task processing logic
-        result: str = agent.execute_task(
-            Task(
-                description=input_data,
-                expected_output="One word only",
-                max_retries=0,
-            )
+    # When calling your agent's method or task processing logic
+    result: str = clarify_the_ask.business_process_analyst.execute_task(
+        Task(
+            description=input_data,
+            expected_output="In two words only",
+            max_retries=0,
         )
-        # Then assert that the result meets your expected output
-        assert semantic_assert(
-            expected_output, result
-        ), f"Expected {expected_output}, but got {result}"
+    )
+    print(result)
+    # Then assert that the result meets your expected output
+    assert semantic_assert(
+        expected_output, result
+    ), f"Expected {expected_output}, but got {result}"
+
+
+def test_pqa_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
+    clarify_the_ask.setup_pqa_agent()
+
+    # Given some input data
+    input_data = (
+        "In two words only, what is the primary goal of CQPA process improvement?"
+    )
+    expected_output = "Process Enhancement"
+
+    # When calling your agent's method or task processing logic
+    result: str = clarify_the_ask.process_analyst_quality_assurance.execute_task(
+        Task(
+            description=input_data,
+            expected_output="Two words only",
+            max_retries=0,
+        )
+    )
+    print(result)
+    # Then assert that the result meets your expected output
+    assert semantic_assert(
+        expected_output, result
+    ), f"Expected {expected_output}, but got {result}"
 
 
 def test_load_yaml_success(monkeypatch: MonkeyPatch, tmp_path: Path) -> None:
@@ -140,7 +161,7 @@ def test_load_yaml_parsing_error(monkeypatch: MonkeyPatch, tmp_path: Path) -> No
 
 # Example test case for `draft_process`
 def test_draft_process(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_bpa_agent()
     clarify_the_ask.setup_draft_process()
 
     # Given some input data
@@ -171,7 +192,7 @@ def test_draft_process(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `capture_assumptions`
 def test_capture_assumptions(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_bpa_agent()
     clarify_the_ask.setup_capture_assumptions()
 
     expected_output = """
@@ -200,7 +221,7 @@ def test_capture_assumptions(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `clarify_details`
 def test_clarify_details(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_bpa_agent()
     clarify_the_ask.setup_clarify_details()
 
     expected_output = """
@@ -233,7 +254,7 @@ def test_clarify_details(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `reviewed_process`
 def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_bpa_agent()
     clarify_the_ask.setup_reviewed_process()
 
     expected_output = """
@@ -268,7 +289,7 @@ def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `quality_assurance_review`
 def test_quality_assurance_review(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_pqa_agent()
     clarify_the_ask.setup_quality_assurance_review()
 
     expected_output = """
