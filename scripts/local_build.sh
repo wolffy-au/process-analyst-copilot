@@ -1,6 +1,7 @@
 #!/bin/sh
 
 python -m pip install --upgrade pip
+pip install --upgrade setuptools
 pip install --upgrade virtualenv
 pip install --upgrade poetry
 pip install --upgrade poetry-dynamic-versioning
@@ -20,7 +21,7 @@ poetry run flake8 #--output-file=build/flake8/flake8.txt
 poetry run pytest --cov=process_analyst_copilot --cov-report=term-missing --cov-report=html:build/coverage-reports
 poetry run behave
 
-poetry run pdoc --output-dir build/pdoc process_analyst_copilot
+poetry run pdoc --output-dir docs process_analyst_copilot
 poetry run cz bump --changelog --yes
 poetry build
 
