@@ -178,7 +178,6 @@ class ClarifyTheAsk:
             agent=self.business_process_analyst,
             output_file=self.assumptions_file.as_posix(),
             tools=[self.draft_file_tool],
-            context=[self.draft_process],
         )  # type: ignore[reportCallIssue]
 
     def setup_clarify_details(self) -> None:
@@ -188,7 +187,6 @@ class ClarifyTheAsk:
             agent=self.business_process_analyst,
             output_file=self.questions_file.as_posix(),
             tools=[self.draft_file_tool, self.assumptions_file_tool],
-            context=[self.capture_assumptions],
         )  # type: ignore[reportCallIssue]
 
     # TODO include human clarification
@@ -206,7 +204,6 @@ class ClarifyTheAsk:
                 self.draft_file_tool,
                 self.assumptions_file_tool,
             ],
-            context=[self.capture_assumptions, self.clarify_details],
         )  # type: ignore[reportCallIssue]
 
     def setup_quality_assurance_review(self) -> None:
