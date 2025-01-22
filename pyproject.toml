@@ -5,6 +5,12 @@ description = "Hellow World deployment test"
 authors = ["Stephan Borg <wolffborg1@gmail.com>"]
 readme = "README.md"
 packages = [{include = "process_analyst_copilot"}]
+include = [
+    "config/*",
+    "docs/*",
+    "CHANGELOG.md",
+    "poetry.lock",
+]
 
 [tool.poetry.dependencies]
 python = "^3.11,<3.13.dev0"

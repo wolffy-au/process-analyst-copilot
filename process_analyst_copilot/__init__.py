@@ -1,12 +1,10 @@
 from typing import Any, Dict, Optional
 import logging
-import json
 import os
 from pathlib import Path
 import yaml
-from pydantic import BaseModel
 from crewai import Agent, Task, Crew, LLM
-from crewai_tools import FileReadTool
+from crewai_tools import FileReadTool, SerperDevTool
 
 # Configure logging
 LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING").upper()
@@ -15,74 +13,16 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
+# Prevent OpenTelemetry errors from logging when behind a firewall
+os.environ["OTEL_PYTHON_DISABLED_INSTRUMENTATIONS"] = (
+    "azure_sdk,django,fastapi,flask,psycopg2,requests,urllib,urllib3"
+)
+
 # FIXME: pydantic_core._pydantic_core.ValidationError: 1 validation error for Crew Value error, Please provide an
 # OpenAI API key.
 # Need to set false OPENAI_API_KEY to a non-empty string to avoid this error using memory=True on your Crew()
 if not os.environ.get("OPENAI_API_KEY"):
     os.environ["OPENAI_API_KEY"] = "N/A"
-
-
-class StepTask(BaseModel):
-    """Represents a task within a process step.
-
-    Attributes:
-        id (int): The unique identifier for the task.
-        task (str): The description of the task.
-        materials (list[str]): A list of materials required for the task.
-        optional (list[str]): A list of optional items for the task.
-    """
-
-    id: int
-    task: str
-    materials: list[str] = []
-    optional: list[str] = []
-
-
-class ProcessStep(BaseModel):
-    """Represents a step within a process.
-
-    Attributes:
-        id (int): The unique identifier for the process step.
-        name (str): The name of the process step.
-        description (str): A description of the process step.
-        tasks (list[StepTask]): A list of tasks within the process step.
-    """
-
-    id: int
-    name: str
-    description: str
-    tasks: list[StepTask]
-
-
-class GeneralProcess(BaseModel):
-    """Represents a general process containing multiple steps.
-
-    Attributes:
-        steps (list[ProcessStep]): A list of process steps.
-    """
-
-    steps: list[ProcessStep]
-
-    @staticmethod
-    def load(json_file_path: str) -> "GeneralProcess":
-        """Loads a GeneralProcess instance from a JSON file.
-
-        Args:
-            json_file_path (str): The path to the JSON file.
-
-        Returns:
-            GeneralProcess: An instance of GeneralProcess.
-        """
-        try:
-            with open(json_file_path, "r") as file:
-                data = json.load(file)
-            return GeneralProcess(**data)
-        except FileNotFoundError:
-            logging.error(f"Configuration file not found: {json_file_path}")
-            raise
-        except json.JSONDecodeError as e:
-            logging.error(f"Error parsing JSON file: {json_file_path} - {e}")
-            raise
 
 
 class OllamaLLM(LLM):  # type: ignore[misc]
@@ -210,6 +150,7 @@ class ClarifyTheAsk:
             llm=self.llm_model,
             tools=[self.cpqa_bok_tool],
         )  # type: ignore
+        self.serper_tool = SerperDevTool()
         self.draft_file_tool = FileReadTool(file_path=self.draft_file.as_posix())
         self.assumptions_file_tool = FileReadTool(
             file_path=self.assumptions_file.as_posix()
@@ -227,6 +168,7 @@ class ClarifyTheAsk:
             config=self.tasks_config["draft_process"],
             agent=self.business_process_analyst,
             output_file=self.draft_file.as_posix(),
+            # tools=[self.serper_tool],
         )  # type: ignore[reportCallIssue]
 
     def setup_capture_assumptions(self) -> None:
@@ -236,6 +178,7 @@ class ClarifyTheAsk:
             agent=self.business_process_analyst,
             output_file=self.assumptions_file.as_posix(),
             tools=[self.draft_file_tool],
+            context=[self.draft_process],
         )  # type: ignore[reportCallIssue]
 
     def setup_clarify_details(self) -> None:
@@ -245,6 +188,7 @@ class ClarifyTheAsk:
             agent=self.business_process_analyst,
             output_file=self.questions_file.as_posix(),
             tools=[self.draft_file_tool, self.assumptions_file_tool],
+            context=[self.capture_assumptions],
         )  # type: ignore[reportCallIssue]
 
     # TODO include human clarification
@@ -262,6 +206,7 @@ class ClarifyTheAsk:
                 self.draft_file_tool,
                 self.assumptions_file_tool,
             ],
+            context=[self.capture_assumptions, self.clarify_details],
         )  # type: ignore[reportCallIssue]
 
     def setup_quality_assurance_review(self) -> None:

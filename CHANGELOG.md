@@ -3,7 +3,6 @@
 ### Feat
 
 - Process quality assurance role and task
-- Process quality assurance role and task
 
 ### Fix
 
