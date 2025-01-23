@@ -210,6 +210,7 @@ class ClarifyTheAsk:
             tools=[
                 self.draft_file_tool,
                 self.assumptions_file_tool,
+                self.questions_file_tool,
             ],
         )  # type: ignore[reportCallIssue]
 
