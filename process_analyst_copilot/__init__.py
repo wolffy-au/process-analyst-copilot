@@ -174,14 +174,15 @@ class ClarifyTheAsk:
             # context=[self.draft_process],
         )  # type: ignore[reportCallIssue]
 
-    def setup_draft_process_structured(self) -> None:
+    def setup_draft_process_human(self) -> None:
         # Task 1.2: Convert draft process into structured data
-        self.draft_process_structured = Task(
-            config=self.tasks_config["draft_process_structured"],
+        self.draft_process_human = Task(
+            config=self.tasks_config["draft_process_human"],
             agent=self.business_process_analyst,
-            output_json=GeneralProcess,
-            output_file=self.draft_file_json,
-            tools=[self.draft_file_tool],
+            output_file=self.draft_file.as_posix(),
+            tools=[self.draft_json_tool],
+            # context=[self.draft_process],
+            # async_execution=True,
         )  # type: ignore
 
     def setup_capture_assumptions(self) -> None:
@@ -192,6 +193,7 @@ class ClarifyTheAsk:
             output_json=GeneralProcessAssumptions,
             output_file=self.assumptions_file_json,
             tools=[self.draft_json_tool],
+            # context=[self.draft_process],
         )  # type: ignore[reportCallIssue]
 
     def setup_clarify_details(self) -> None:
@@ -238,8 +240,8 @@ class ClarifyTheAsk:
                 self.process_analyst_quality_assurance,
             ],
             tasks=[
-                self.draft_process,
-                self.draft_process_structured,
+                # self.draft_process,
+                # self.draft_process_human,
                 self.capture_assumptions,
                 # self.clarify_details,
                 # self.reviewed_process,
@@ -256,7 +258,7 @@ class ClarifyTheAsk:
         self.setup_bpa_agent()
         self.setup_pqa_agent()
         self.setup_draft_process()
-        self.setup_draft_process_structured()
+        self.setup_draft_process_human()
         self.setup_capture_assumptions()
         self.setup_clarify_details()
         self.setup_reviewed_process()
