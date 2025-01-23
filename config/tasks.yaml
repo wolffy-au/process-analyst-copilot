@@ -44,7 +44,7 @@ clarify_details:
 
 reviewed_process:
   description: >
-    Consolidate the documents `{draft_file}` and `{assumptions_file}` into a single refined process. 
+    Consolidate the documents `{draft_file}`, `{assumptions_file}` and `{questions_file}` into a single refined process. 
     Use clarified details from user responses to replace assumptions wherever possible, while incorporating 
     preferred assumed values only where explicitly documented. Ensure all remaining assumptions are clearly 
     linked to their relevant process steps. The consolidated process should be optimized for precision, 
@@ -73,4 +73,3 @@ quality_assurance_review:
   expected_output: >
     A final, detailed, and informative process ready to be sent to the user. This response should fully address
     the user's inquiry, incorporating all releven feedback and improvements.
-    
