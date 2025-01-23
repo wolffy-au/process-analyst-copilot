@@ -7,19 +7,19 @@ draft_process:
     A comprehensive, well-organized list of process steps. Each step should be concise, easy to 
     follow, and include additional context or substeps as needed to avoid ambiguity. Use numbered lists or nested 
     bullet points to represent hierarchical workflows where applicable.
+
+draft_process_human:
+  description: >
+    Convert the detailed JSON process document into human readable format. 
+    The goal is to ensure all steps and tasks within the process are captured accurately.
+  expected_output: >
+    A comprehensive, well-organized list of process steps and substeps. Each step should be concise, easy to 
+    follow, and include additional context or substeps as needed to avoid ambiguity.
     Example Output:
     **Process Step Number: Short Description**
       1: Substep description ...
       2: Substep description ...
       3: Substep description ...
-
-draft_process_structured:
-  description: >
-    Convert the detailed process document `{draft_file}` into JSON format. 
-    The goal is to ensure all steps and tasks within the process are captured accurately.
-  expected_output: >
-    A comprehensive, well-organized JSON of process steps and substeps. Each step should be concise, easy to 
-    follow, and include additional context or substeps as needed to avoid ambiguity.
 
 capture_assumptions:
   description: >
