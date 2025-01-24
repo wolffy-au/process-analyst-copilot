@@ -1,6 +1,6 @@
 from behave import given, when, then  # type: ignore[reportAttributeAccessIssue]
 from behave.runner import Context
-from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
+from process_analyst_copilot import ClarifyTheAsk
 from process_analyst_copilot.SemanticAssert import semantic_assert
 
 

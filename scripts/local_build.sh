@@ -12,9 +12,9 @@ poetry env use python
 poetry env info
 
 poetry dynamic-versioning enable
-poetry lock --no-update
-poetry update
-poetry install --sync # --without=dev
+poetry lock
+poetry update --lock
+poetry install # --sync --without=dev
 
 poetry run mypy process_analyst_copilot tests
 poetry run flake8 #--output-file=build/flake8/flake8.txt
