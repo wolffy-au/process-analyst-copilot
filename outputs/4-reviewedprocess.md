@@ -1,44 +1,45 @@
-**The Refined Way to Make a Cup of Tea Workflow**
+**1. Gather Ingredients**
+   - Ensure that you have your preferred tea leaves or tea bags readily available.
+   - Verify that the kettle is filled with fresh water and properly placed on the stovetop.
+   - Check that sugar, milk (or preferred dairy/milk alternative), and any desired sweeteners are accessible.
 
-1. **Gather Ingredients**
-	* Substep 1.1: Ensure tea leaves or tea bags are readily available.
-	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
-	* Substep 1.2: Verify the kettle is filled with fresh water and placed on the stovetop.
-	* Assumption: For this substep, the assumed value for assumption "Water Quality" will be used.
-	* Substep 1.3: Check if sugar, milk (or preferred dairy/milk alternative), and any desired sweeteners are within reach.
+   - **Assumption:** It is assumed that you are familiar with the types of tea and their preparation requirements.
 
-2. **Heat Water**
-	* Substep 2.1: Turn the stove to medium-high heat.
-	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
-	* Substep 2.2: Wait for the water to reach a rolling boil.
-	* Substep 2.3: Once boiling, reduce heat to a simmer and let it continue to warm.
+**2. Heat Water**
+   - Turn the stove to medium-high heat.
+   - Wait for the water to reach a rolling boil.
+   - Once boiling, reduce heat to a simmer to maintain warmth.
 
-3. **Prepare Tea**
-	* Substep 3.1: Measure out one teaspoon of loose-leaf tea or use one tea bag per cup.
-	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
-	* Substep 3.2: Place the measured tea into a teapot or directly into your cup if using a tea infuser.
-	* Substep 3.3: Pour the heated water over the tea leaves or tea bag.
+   - **Assumption:** You understand that the boiling point of water may differ based on altitude and are aware of your brewing altitude.
 
-4. **Steep and Infuse**
-	* Substep 4.1: Allow the tea to steep for the recommended time (usually 2-5 minutes, depending on personal preference).
-	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
-	* Substep 4.2: If using loose-leaf tea, consider adding a strainer over your cup to catch leaves.
+**3. Prepare Tea**
+   - Measure out one teaspoon of loose-leaf tea or use one tea bag per cup.
+   - Place the measured tea into a teapot or directly into your cup if you're using a tea infuser.
+   - Pour the heated water over the tea leaves or tea bag to initiate infusion.
 
-5. **Add Sweeteners and Creamers**
-	* Substep 5.1: Add sugar, honey, or other sweeteners according to taste.
-	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
-	* Substep 5.2: Pour in milk (or preferred dairy/milk alternative) if desired.
+   - **Assumption:** You consistently measure the amount of water and tea you use, having a standard method or tool for measurement.
 
-6. **Serve and Enjoy**
-	* Substep 6.1: Transfer the tea to your cup using a teapot or by pouring directly from the infuser.
-	* Assumption: For this substep, the assumed value for assumption "Tea Variety" will be used.
-	* Substep 6.2: Stir well to ensure all ingredients are mixed together.
-	* Substep 6.3: Serve immediately and enjoy.
+**4. Steep and Infuse**
+   - Allow the tea to steep for the recommended time (often 2-5 minutes, depending on your preference).
+   - If using loose-leaf tea, consider straining over your cup to catch any leaves.
 
-**Notable Considerations**
+   - **Assumption:** It is presumed that you can adjust the steeping time based on taste preferences.
 
-- **Tea Variety**: Different teas have varying steeping times, so it's essential to research or follow the package instructions for the specific tea you're using.
-- **Water Quality**: Use fresh, cold water for brewing to prevent any off-flavors in your tea.
-- **Equipment Maintenance**: Regularly clean and descale your kettle to ensure optimal performance.
+**5. Add Sweeteners and Creamers**
+   - Add sugar, honey, or other sweeteners as per your taste.
+   - Pour in milk (or preferred dairy/milk alternative) if desired.
 
-This refined workflow outlines a detailed process for making a cup of tea. By following these steps, anyone can create a delicious cup of tea tailored to their preferences while minimizing ambiguity and reliance on assumptions.
+   - **Assumption:** Users are familiar with how to adjust flavorings and additives according to personal preferences.
+
+**6. Serve and Enjoy**
+   - Transfer the tea to your cup via a teapot or directly from the infuser.
+   - Stir thoroughly to ensure proper mixing of all ingredients.
+   - Serve immediately and enjoy the tea.
+
+   - **Assumption:** You understand the cooling time needed before consumption to reach a comfortable drinking temperature.
+
+**Final Considerations**
+- Regularly clean and descale your kettle to ensure optimal performance.
+- Be aware that variations in kettle type may affect boiling efficiency, and adjust your methods accordingly.
+
+By following these structured and detailed steps, you can create a precise and enjoyable tea-making process that minimizes ambiguity while incorporating all necessary assumptions.

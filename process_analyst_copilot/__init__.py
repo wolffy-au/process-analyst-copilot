@@ -157,10 +157,10 @@ class ClarifyTheAsk:
                 / "references"
                 / "certified-quality-process-analyst-handbook.pdf"
             ).as_posix(),
-            config=dict(
-                llm=self.embedder,
-                embedder=self.embedder,
-            ),
+            # config=dict(
+            #     llm=self.embedder,
+            #     embedder=self.embedder,
+            # ),
         )
         self.process_analyst_quality_assurance = Agent(
             config=self.agents_config["process_analyst_quality_assurance"],

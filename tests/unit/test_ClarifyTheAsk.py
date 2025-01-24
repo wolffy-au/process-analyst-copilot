@@ -2,7 +2,7 @@ import pytest
 from pytest import MonkeyPatch
 from pathlib import Path
 import yaml
-from crewai import Agent, Task, Crew
+from crewai import Task, Crew
 from crewai_tools import FileReadTool
 from process_analyst_copilot import ClarifyTheAsk
 from process_analyst_copilot.SemanticAssert import semantic_assert
@@ -98,7 +98,7 @@ def test_pqa_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
     input_data = (
         "In two words only, what is the primary goal of CQPA process improvement?"
     )
-    expected_output = "Process Enhancement"
+    expected_output = "Continuous Improvement"
 
     # When calling your agent's method or task processing logic
     result: str = clarify_the_ask.process_analyst_quality_assurance.execute_task(
@@ -270,6 +270,8 @@ def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
     clarify_the_ask.draft_file_tool = FileReadTool(file_path=draft_file)
     assumptions_file = "doctest_2_assumptions.md"
     clarify_the_ask.assumptions_file_tool = FileReadTool(file_path=assumptions_file)
+    questions_file = "doctest_3_questions.md"
+    clarify_the_ask.questions_file_tool = FileReadTool(file_path=questions_file)
 
     clarify_the_ask.reviewed_process.output_file = None
     crew = Crew(
@@ -280,6 +282,7 @@ def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
         inputs={
             "draft_file": draft_file,
             "assumptions_file": assumptions_file,
+            "questions_file": questions_file,
         }
     ).raw
     assert semantic_assert(
@@ -289,6 +292,7 @@ def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `quality_assurance_review`
 def test_quality_assurance_review(clarify_the_ask: ClarifyTheAsk) -> None:
+    clarify_the_ask.setup_bpa_agent()
     clarify_the_ask.setup_pqa_agent()
     clarify_the_ask.setup_quality_assurance_review()
 
