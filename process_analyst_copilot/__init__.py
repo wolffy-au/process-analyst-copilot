@@ -3,7 +3,8 @@ import logging
 import os
 from pathlib import Path
 import yaml
-from crewai import Agent, Task, Crew, LLM
+from crewai import Agent, Task, Crew, LLM, Flow
+from crewai.flow.flow import start, listen
 from crewai_tools import SerperDevTool, FileReadTool, PDFSearchTool
 from process_analyst_copilot.data import GeneralProcess, GeneralProcessAssumptions
 
@@ -19,8 +20,13 @@ os.environ["OTEL_PYTHON_DISABLED_INSTRUMENTATIONS"] = (
     "azure_sdk,django,fastapi,flask,psycopg2,requests,urllib,urllib3"
 )
 
+# FIXME: pydantic_core._pydantic_core.ValidationError: 1 validation error for Crew Value error, Please provide an
+# OpenAI API key.
+# Need to set false OPENAI_API_KEY to a non-empty string to avoid this error using memory=True on your Crew()
+if not os.environ.get("OPENAI_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = "N/A"
 
-class ClarifyTheAsk:
+class ClarifyTheAsk(Flow):
     """Manages the clarification process for business tasks using LLM and Crew.
 
     Attributes:
@@ -34,6 +40,7 @@ class ClarifyTheAsk:
     CONFIG_FILES = {"agents": "agents.yaml", "tasks": "tasks.yaml"}
     embedder_llm: dict[Any, Any] | None = None
     embedder: dict[Any, Any] | None = None
+    input_ask: str | None = None
 
     def __init__(
         self,
@@ -54,6 +61,7 @@ class ClarifyTheAsk:
             questions_file (str): Path to the questions output file.
             reviewed_file (str): Path to the reviewed process output file.
         """
+        super().__init__()
         self.llm_model: LLM = llm_model or LLM(model="gpt-4o-mini")
 
         # Paths
@@ -137,10 +145,35 @@ class ClarifyTheAsk:
             tools=[self.cqpa_bok_tool],
         )  # type: ignore
 
+    @start()
     def setup_draft_process(self) -> None:
+        self.setup_bpa_agent()
         # Task 1.1: Draft process generation
         self.draft_process = Task(
             config=self.tasks_config["draft_process"],
+            agent=self.business_process_analyst,
+            output_pydantic=GeneralProcess,
+            # tools=[self.serper_tool],
+        )  # type: ignore[reportCallIssue]
+
+        crew = Crew(
+            agents=[self.business_process_analyst],
+            tasks=[self.draft_process],
+            # embedder=self.embedder,
+            verbose=True,
+        )
+        results = crew.kickoff(
+            inputs={
+                "input_ask": self.input_ask,
+            }
+        )
+        print(self.state)
+        print(results)
+
+    def setup_draft_process_json(self) -> None:
+        # Task 1.2: Convert draft process into structured data
+        self.draft_process_json = Task(
+            config=self.tasks_config["draft_process_json"],
             agent=self.business_process_analyst,
             output_file=self.draft_file.as_posix(),
         )  # type: ignore[reportCallIssue]
@@ -173,6 +206,11 @@ class ClarifyTheAsk:
             ],
             # context=[self.draft_process],
         )  # type: ignore[reportCallIssue]
+            output_json=GeneralProcess,
+            output_file=self.draft_file_json,
+            # context=[self.draft_process],
+            # async_execution=True,
+        )  # type: ignore
 
     def setup_draft_process_human(self) -> None:
         # Task 1.2: Convert draft process into structured data
@@ -180,8 +218,7 @@ class ClarifyTheAsk:
             config=self.tasks_config["draft_process_human"],
             agent=self.business_process_analyst,
             output_file=self.draft_file.as_posix(),
-            tools=[self.draft_json_tool],
-            # context=[self.draft_process],
+            context=[self.draft_process],
             # async_execution=True,
         )  # type: ignore
 
@@ -265,28 +302,28 @@ class ClarifyTheAsk:
         self.setup_quality_assurance_review()
         self.setup_crew()
 
-    def kickoff(self, input_ask: str) -> str:
-        """Kicks off the clarification process with the given input.
+    # def kickoff(self, input_ask: str) -> str:
+    #     """Kicks off the clarification process with the given input.
 
-        Args:
-            input_ask (str): The initial input for the process.
+    #     Args:
+    #         input_ask (str): The initial input for the process.
 
-        Returns:
-            Dict[str, Any]: The results of the clarification process.
-        """
-        if not hasattr(self, "crew"):
-            raise RuntimeError("Setup method must be called before kickoff.")
+    #     Returns:
+    #         Dict[str, Any]: The results of the clarification process.
+    #     """
+    #     if not hasattr(self, "crew"):
+    #         raise RuntimeError("Setup method must be called before kickoff.")
 
-        results: str = self.crew.kickoff(
-            inputs={
-                "input_ask": input_ask,
-                "draft_file": self.draft_file.name,
-                "assumptions_file": self.assumptions_file.name,
-                "questions_file": self.questions_file.name,
-                "reviewed_file": self.reviewed_file.name,
-            }
-        ).raw
-        return results
+    #     results: str = self.crew.kickoff(
+    #         inputs={
+    #             "input_ask": input_ask,
+    #             "draft_file": self.draft_file.name,
+    #             "assumptions_file": self.assumptions_file.name,
+    #             "questions_file": self.questions_file.name,
+    #             "reviewed_file": self.reviewed_file.name,
+    #         }
+    #     ).raw
+    #     return results
 
     def test_crew(self, n_iterations: int = 3) -> None:
         """Tests the Crew instance with the given number of iterations.
