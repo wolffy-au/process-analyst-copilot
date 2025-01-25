@@ -9,3 +9,7 @@ git checkout feature-structuredprocess
 git pull --rebase
 # git rebase develop
 # git push --force-with-lease
+git checkout feature-processresearch
+git pull --rebase
+# git rebase develop
+# git push --force-with-lease

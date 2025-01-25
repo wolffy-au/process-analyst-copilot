@@ -33,7 +33,7 @@ flake8 = "^7.1.1"
 flake8-bugbear = "^24.10.31"
 flake8-annotations = "^3.1.1"
 flake8-pyproject = "^1.2.3"
-#flake8-mypy = "^17.8.0"
+flake8-mypy = "^17.8.0"
 behave = "^1.2.6"
 pdoc = "^15.0.1"
 commitizen = "^4.1.0"
@@ -78,7 +78,7 @@ max-line-length = 120
 select = "C,E,F,W,B,B950"
 extend-ignore = "E203,E501,E704,F811,W503"
 exclude = ".venv,.git,docs,build,dist,*.egg-info,.pytest_cache,.vscode,bamboo-specs,jenkins-specs"
- output-file = "build/flake8/flake8.txt"
+output-file = "build/flake8/flake8.txt"
 
 [tool.pytest.ini_options]
 addopts = "--cov=process_analyst_copilot --junitxml='build/unit-tests.xml' --cov-report=xml:'build/coverage.xml' --cov-report=html:'build/coverage-reports'"

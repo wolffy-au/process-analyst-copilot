@@ -788,7 +788,7 @@ files = [
     {file = "cffi-1.17.1-cp39-cp39-win_amd64.whl", hash = "sha256:d016c76bdd850f3c626af19b0542c9677ba156e4ee4fccfdd7848803533ef662"},
     {file = "cffi-1.17.1.tar.gz", hash = "sha256:1c39c6016c32bc48dd54561950ebd6836e1670f2ae46128f67cf49e789c52824"},
 ]
-markers = {main = "(os_name == \"nt\" or platform_python_implementation != \"PyPy\") and (implementation_name != \"pypy\" or platform_python_implementation != \"PyPy\") and (python_version == \"3.11\" or python_version >= \"3.12\")", dev = "python_version >= \"3.12\" or python_version == \"3.11\""}
+markers = {main = "(os_name == \"nt\" or platform_python_implementation != \"PyPy\") and (python_version == \"3.11\" or python_version >= \"3.12\") and (platform_python_implementation != \"PyPy\" or implementation_name != \"pypy\")", dev = "python_version >= \"3.12\" or python_version == \"3.11\""}
 
 [package.dependencies]
 pycparser = "*"
@@ -1864,6 +1864,24 @@ flake8 = ">=6.0.0"
 
 [package.extras]
 dev = ["coverage", "hypothesis", "hypothesmith (>=0.2)", "pre-commit", "pytest", "tox"]
+
+[[package]]
+name = "flake8-mypy"
+version = "17.8.0"
+description = "A plugin for flake8 integrating mypy."
+optional = false
+python-versions = "*"
+groups = ["dev"]
+markers = "python_version >= \"3.12\" or python_version == \"3.11\""
+files = [
+    {file = "flake8-mypy-17.8.0.tar.gz", hash = "sha256:47120db63aff631ee1f84bac6fe8e64731dc66da3efc1c51f85e15ade4a3ba18"},
+    {file = "flake8_mypy-17.8.0-py35.py36-none-any.whl", hash = "sha256:cff009f4250e8391bf48990093cff85802778c345c8449d6498b62efefeebcbc"},
+]
+
+[package.dependencies]
+attrs = "*"
+flake8 = ">=3.0.0"
+mypy = "*"
 
 [[package]]
 name = "flake8-pyproject"
@@ -6288,7 +6306,7 @@ files = [
     {file = "pycparser-2.22-py3-none-any.whl", hash = "sha256:c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc"},
     {file = "pycparser-2.22.tar.gz", hash = "sha256:491c8be9c040f5390f5bf44a5b07752bd07f56edf992381b05c701439eec10f6"},
 ]
-markers = {main = "(os_name == \"nt\" or platform_python_implementation != \"PyPy\") and (implementation_name != \"pypy\" or platform_python_implementation != \"PyPy\") and (python_version == \"3.11\" or python_version >= \"3.12\")", dev = "python_version >= \"3.12\" or python_version == \"3.11\""}
+markers = {main = "(os_name == \"nt\" or platform_python_implementation != \"PyPy\") and (python_version == \"3.11\" or python_version >= \"3.12\") and (platform_python_implementation != \"PyPy\" or implementation_name != \"pypy\")", dev = "python_version >= \"3.12\" or python_version == \"3.11\""}
 
 [[package]]
 name = "pydantic"
@@ -9313,4 +9331,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11,<3.13.dev0"
-content-hash = "2c7255508fef569c8f475207cc95d73b204e4eeb707defb7629ef56ff210b32e"
+content-hash = "6201f43e20e0bf1468ef435ff5d957aa5977907fc71e92123942da02ab94b508"
