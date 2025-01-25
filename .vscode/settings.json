@@ -11,4 +11,6 @@
     "black-formatter.importStrategy": "fromEnvironment",
     "flake8.importStrategy": "fromEnvironment",
     "mypy-type-checker.importStrategy": "fromEnvironment",
+    "mypy-type-checker.reportingScope": "workspace",
+    "flake8.showNotifications": "onWarning"
 }

@@ -25,34 +25,6 @@ if not os.environ.get("OPENAI_API_KEY"):
     os.environ["OPENAI_API_KEY"] = "N/A"
 
 
-class OllamaLLM(LLM):  # type: ignore[misc]
-    """Represents a custom LLM for Ollama with context window adjustments.
-
-    Attributes:
-        agents_config (Any): Configuration for agents (not used).
-        tasks_config (Any): Configuration for tasks (not used).
-        num_ctx (int): The maximum context window size.
-    """
-
-    num_ctx = 2048
-
-    def get_context_window_size(self) -> int:
-        """Returns the adjusted context window size.
-
-        Returns:
-            int: The context window size.
-        """
-        if self.num_ctx > 2048:
-            logging.warning(
-                """
-                Ollama is currently restricted to 2048 context windows by default.
-                For larger contexts, use the work-around documented here:
-                https://github.com/ollama/ollama/issues/8356#issuecomment-2579221678
-                """
-            )
-        return int(self.num_ctx * 0.75)
-
-
 class ClarifyTheAsk:
     """Manages the clarification process for business tasks using LLM and Crew.
 
@@ -114,24 +86,12 @@ class ClarifyTheAsk:
             logging.error(f"Error parsing YAML file: {file_path} - {e}")
             raise
 
-    def test_llm(self, content: str = "Testing 1 2 3!", role: str = "system") -> str:
-        """Tests the LLM with a simple prompt.
-
-        Args:
-            content (str): The test prompt content. Defaults to "Testing 1 2 3!".
-            role (str): The role of the LLM during the interaction. Defaults to "system".
-
-        Returns:
-            str: The LLM's response as a string.
-        """
-        return str(self.llm_model.call([{"role": role, "content": content}]))
-
     def setup_bpa_agent(self) -> None:
         """Sets up Busness Process Analyst agent."""
         # Agent: Busness Process Analyst
         self.business_process_analyst = Agent(
             config=self.agents_config["business_process_analyst"],
-            max_iter=2,  # Default: 20 iterations
+            max_iter=1,  # Default: 20 iterations
             llm=self.llm_model,
         )  # type: ignore[reportCallIssue]
 
@@ -164,7 +124,7 @@ class ClarifyTheAsk:
         )
         self.process_analyst_quality_assurance = Agent(
             config=self.agents_config["process_analyst_quality_assurance"],
-            max_iter=2,  # Default: 20 iterations
+            max_iter=1,  # Default: 20 iterations
             llm=self.llm_model,
             tools=[self.cpqa_bok_tool],
         )  # type: ignore
@@ -175,7 +135,35 @@ class ClarifyTheAsk:
             config=self.tasks_config["draft_process"],
             agent=self.business_process_analyst,
             output_file=self.draft_file.as_posix(),
-            # tools=[self.serper_tool],
+        )  # type: ignore[reportCallIssue]
+
+    def setup_research_activity(self) -> None:
+        # Task 1.1: Research draft process
+        self.research_activity = Task(
+            config=self.tasks_config["research_activity"],
+            agent=self.business_process_analyst,
+            output_pydantic=SearchResponse,
+            output_file=self.researched_file_json,
+            max_retries=0,
+            tools=[
+                # self.draft_file_tool,
+                self.serper_tool,
+            ],
+            context=[self.draft_process],
+        )  # type: ignore[reportCallIssue]
+
+    def setup_research_process(self) -> None:
+        # Task 1.1: Research draft process
+        self.research_process = Task(
+            config=self.tasks_config["research_process"],
+            agent=self.business_process_analyst,
+            output_file=self.researched_file.as_posix(),
+            max_retries=0,
+            tools=[
+                # self.draft_file_tool,
+                self.serper_tool,
+            ],
+            # context=[self.draft_process],
         )  # type: ignore[reportCallIssue]
 
     def setup_capture_assumptions(self) -> None:
