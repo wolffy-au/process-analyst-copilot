@@ -9,6 +9,7 @@ The Process Analyst Copilot is an application designed to assist process analyst
 - **Draft Process**: Automatically draft business processes based on input queries.
 - **Capture Assumptions**: Identify and document assumptions during the analysis.
 - **Clarify Details**: Provide detailed clarifications on specific aspects of the business process.
+- **Quality Assurance**: Review and improve specific aspects of the business process.
 - **Integration with YAML Configurations**: Load and utilize configurations from YAML files for agents and tasks.
 
 ## Installation
@@ -40,12 +41,18 @@ The application uses YAML files for configuring agents and tasks. These files ar
 
 ## Usage
 
+**Copy one of the `sample.py` files to continue:**
+- openai-sample.py
+- ollama-sample.py
+
 1. Run the application:
     ```sh
     poetry run python sample.py
     ```
 
 2. The main entry point is the `kickoff` method in the `ClarifyTheAsk` class, which initiates the process based on the provided input query.
+
+3. Check the `outputs` directory for the results.
 
 ## Example
 
