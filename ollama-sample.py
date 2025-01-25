@@ -8,14 +8,14 @@ llm_model = OllamaLLM(
     temperature=0.3,
     api_base="http://localhost:11434",
 )
-llm_model.num_ctx = 131072
+llm_model.num_ctx = 2048
 
 draft_process = ClarifyTheAsk(llm_model=llm_model)
 
 # FIXME: pydantic_core._pydantic_core.ValidationError: 1 validation error for Crew Value error, Please provide an
 # OpenAI API key.
 # Need to set Crew() embedder to avoid this error using memory=True on your Crew()
-draft_process.embedder = {"provider": "ollama", "config": {"model": "llama3.1:8b"}}
+draft_process.embedder = {"provider": "ollama", "config": {"model": "nomic-embed-text"}}
 
 # print(draft_process.test_llm())
 draft_process.setup()

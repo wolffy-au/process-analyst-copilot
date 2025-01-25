@@ -32,6 +32,11 @@ The Process Analyst Copilot is an application designed to assist process analyst
 
 4. Update the `.env` file with the necessary configurations.
 
+5. (Optional) If you wish to use a CQPA reference for the process quality assurance step, the handbook can be copied here:
+    ```sh
+    cp certified-quality-process-analyst-handbook.pdf config\references\
+    ```
+
 ## Configuration
 
 The application uses YAML files for configuring agents and tasks. These files are located in the [config](./config) directory:
