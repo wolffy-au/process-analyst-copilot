@@ -50,7 +50,7 @@ class OllamaLLM(LLM):  # type: ignore[misc]
         return int(self.num_ctx * 0.75)
 
 
-def test_llm(llm: LLM, content: str = "Testing 1 2 3!", role: str = "system") -> str:
+def llm_call(llm: LLM, content: str = "Testing 1 2 3!", role: str = "system") -> str:
     """Tests the LLM with a simple prompt.
 
     Args:

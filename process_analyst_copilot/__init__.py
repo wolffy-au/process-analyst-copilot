@@ -109,6 +109,13 @@ class ClarifyTheAsk:
 
     def setup_pqa_agent(self) -> None:
         """Sets up Certified  Quality Process Assurance agent."""
+        config = None
+        if not os.environ.get("OPENAI_API_KEY"):
+            config = dict(
+                llm=self.embedder,
+                embedder=self.embedder,
+            )
+
         # Agent: Certified  Quality Process Assurance
         self.cpqa_bok_tool: PDFSearchTool = PDFSearchTool(
             pdf=Path(
@@ -117,10 +124,7 @@ class ClarifyTheAsk:
                 / "references"
                 / "certified-quality-process-analyst-handbook.pdf"
             ).as_posix(),
-            # config=dict(
-            #     llm=self.embedder,
-            #     embedder=self.embedder,
-            # ),
+            config=config,
         )
         self.process_analyst_quality_assurance = Agent(
             config=self.agents_config["process_analyst_quality_assurance"],

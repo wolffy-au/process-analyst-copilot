@@ -6,6 +6,7 @@ from crewai import Task, Crew
 from crewai_tools import FileReadTool
 from process_analyst_copilot import ClarifyTheAsk
 from process_analyst_copilot.SemanticAssert import semantic_assert
+from process_analyst_copilot.utils import OllamaLLM, llm_call
 
 
 @pytest.fixture
@@ -18,19 +19,22 @@ def clarify_the_ask() -> ClarifyTheAsk:
     return ClarifyTheAsk()
 
     # # Ollama setup for pytest
-    # from process_analyst_copilot import OllamaLLM
-
     # llm_model = OllamaLLM(
     #     model="ollama/llama3.1:8b",
-    #     temperature=0.3,
+    #     temperature=0,
     #     api_base="http://localhost:11434",
     # )
     # # Ollama default context window
     # # 2048 + 1 to trigger OllamaLLM context window warning
     # llm_model.num_ctx = 2048 + 1
-    # x: ClarifyTheAsk = ClarifyTheAsk(llm_model=llm_model)
-    # x.embedder = {"provider": "ollama", "config": {"model": "llama3.1:8b"}}
-    # return x
+    # clarify_the_ask: ClarifyTheAsk = ClarifyTheAsk(
+    #     llm_model=llm_model,
+    # )
+    # clarify_the_ask.embedder = {
+    #     "provider": "ollama",
+    #     "config": {"model": "llama3.1:8b"},
+    # }
+    # return clarify_the_ask
 
 
 def test_llm_ctx_warn(clarify_the_ask: ClarifyTheAsk) -> None:
@@ -61,7 +65,7 @@ def test_llm_response(clarify_the_ask: ClarifyTheAsk) -> None:
     expected_output = "blue"
 
     # When calling your agent's method or task processing logic
-    result: str = clarify_the_ask.test_llm(content=input_data)
+    result: str = llm_call(llm=clarify_the_ask.llm_model, content=input_data)
 
     # Then assert that the result meets your expected output
     assert semantic_assert(
@@ -278,13 +282,7 @@ def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
         agents=[clarify_the_ask.business_process_analyst],
         tasks=[clarify_the_ask.reviewed_process],
     )
-    result: str = crew.kickoff(
-        inputs={
-            "draft_file": draft_file,
-            "assumptions_file": assumptions_file,
-            "questions_file": questions_file,
-        }
-    ).raw
+    result: str = crew.kickoff(inputs={}).raw
     assert semantic_assert(
         expected_output, result
     ), f"Expected {expected_output}, but got {result}"
