@@ -37,6 +37,7 @@ class ClarifyTheAsk:
     """
 
     CONFIG_FILES = {"agents": "agents.yaml", "tasks": "tasks.yaml"}
+    embedder_llm: dict[Any, Any] | None = None
     embedder: dict[Any, Any] | None = None
 
     def __init__(
@@ -112,7 +113,7 @@ class ClarifyTheAsk:
         config = None
         if not os.environ.get("OPENAI_API_KEY"):
             config = dict(
-                llm=self.embedder,
+                llm=self.embedder_llm,
                 embedder=self.embedder,
             )
 
@@ -217,6 +218,10 @@ class ClarifyTheAsk:
         )  # type: ignore
 
     def setup_crew(self) -> None:
+        embedder = None
+        if not os.environ.get("OPENAI_API_KEY"):
+            embedder = self.embedder
+
         self.crew = Crew(
             agents=[
                 self.business_process_analyst,
@@ -230,7 +235,7 @@ class ClarifyTheAsk:
                 self.quality_assurance_review,
             ],
             memory=True,
-            embedder=self.embedder,
+            embedder=embedder,
             # cache=False,
             verbose=True,
         )

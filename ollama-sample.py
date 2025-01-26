@@ -1,4 +1,5 @@
-from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
+from process_analyst_copilot import ClarifyTheAsk
+from process_analyst_copilot.utils import OllamaLLM
 
 # FIXME Ollama is currently restricted to 2048 context windows
 # Workaround found here which is why this is editable
@@ -15,7 +16,23 @@ draft_process = ClarifyTheAsk(llm_model=llm_model)
 # FIXME: pydantic_core._pydantic_core.ValidationError: 1 validation error for Crew Value error, Please provide an
 # OpenAI API key.
 # Need to set Crew() embedder to avoid this error using memory=True on your Crew()
-draft_process.embedder = {"provider": "ollama", "config": {"model": "nomic-embed-text"}}
+draft_process.embedder_llm = dict(
+    provider="ollama",  # or google, openai, anthropic, llama2, ...
+    config=dict(
+        model="llama3.1:8b",
+        # temperature=0.5,
+        # top_p=1,
+        # stream=true,
+    ),
+)
+draft_process.embedder = dict(
+    provider="ollama",
+    config=dict(
+        model="nomic-embed-text",
+        task_type="retrieval_document",
+        # title="Embeddings",
+    ),
+)
 
 # print(draft_process.test_llm())
 draft_process.setup()
