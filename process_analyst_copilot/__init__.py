@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import yaml
 from crewai import Agent, Task, Crew, LLM
-from crewai_tools import SerperDevTool, FileReadTool, PDFSearchTool
+from crewai_tools import FileReadTool, PDFSearchTool
 
 # Configure logging
 LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING").upper()
@@ -17,12 +17,6 @@ logging.basicConfig(
 os.environ["OTEL_PYTHON_DISABLED_INSTRUMENTATIONS"] = (
     "azure_sdk,django,fastapi,flask,psycopg2,requests,urllib,urllib3"
 )
-
-# FIXME: pydantic_core._pydantic_core.ValidationError: 1 validation error for Crew Value error, Please provide an
-# OpenAI API key.
-# Need to set false OPENAI_API_KEY to a non-empty string to avoid this error using memory=True on your Crew()
-if not os.environ.get("OPENAI_API_KEY"):
-    os.environ["OPENAI_API_KEY"] = "N/A"
 
 
 class ClarifyTheAsk:
@@ -92,11 +86,10 @@ class ClarifyTheAsk:
         # Agent: Busness Process Analyst
         self.business_process_analyst = Agent(
             config=self.agents_config["business_process_analyst"],
-            max_iter=1,  # Default: 20 iterations
+            max_iter=2,  # Default: 20 iterations
             llm=self.llm_model,
         )  # type: ignore[reportCallIssue]
 
-        self.serper_tool = SerperDevTool()
         self.draft_file_tool = FileReadTool(file_path=self.draft_file.as_posix())
         self.assumptions_file_tool = FileReadTool(
             file_path=self.assumptions_file.as_posix()
@@ -111,14 +104,18 @@ class ClarifyTheAsk:
     def setup_pqa_agent(self) -> None:
         """Sets up Certified  Quality Process Assurance agent."""
         config = None
-        if not os.environ.get("OPENAI_API_KEY"):
+        if self.embedder is not None and self.embedder_llm is not None:
             config = dict(
                 llm=self.embedder_llm,
                 embedder=self.embedder,
             )
+        elif self.embedder is not None and self.embedder_llm is None:
+            config = dict(
+                embedder=self.embedder,
+            )
 
         # Agent: Certified  Quality Process Assurance
-        self.cpqa_bok_tool: PDFSearchTool = PDFSearchTool(
+        self.cqpa_bok_tool: PDFSearchTool = PDFSearchTool(
             pdf=Path(
                 # Sample reference doc
                 Path(self.config_dir)
@@ -129,9 +126,9 @@ class ClarifyTheAsk:
         )
         self.process_analyst_quality_assurance = Agent(
             config=self.agents_config["process_analyst_quality_assurance"],
-            max_iter=1,  # Default: 20 iterations
+            max_iter=2,  # Default: 20 iterations
             llm=self.llm_model,
-            tools=[self.cpqa_bok_tool],
+            tools=[self.cqpa_bok_tool],
         )  # type: ignore
 
     def setup_draft_process(self) -> None:
@@ -140,35 +137,6 @@ class ClarifyTheAsk:
             config=self.tasks_config["draft_process"],
             agent=self.business_process_analyst,
             output_file=self.draft_file.as_posix(),
-        )  # type: ignore[reportCallIssue]
-
-    def setup_research_activity(self) -> None:
-        # Task 1.1: Research draft process
-        self.research_activity = Task(
-            config=self.tasks_config["research_activity"],
-            agent=self.business_process_analyst,
-            output_pydantic=SearchResponse,
-            output_file=self.researched_file_json,
-            max_retries=0,
-            tools=[
-                # self.draft_file_tool,
-                self.serper_tool,
-            ],
-            context=[self.draft_process],
-        )  # type: ignore[reportCallIssue]
-
-    def setup_research_process(self) -> None:
-        # Task 1.1: Research draft process
-        self.research_process = Task(
-            config=self.tasks_config["research_process"],
-            agent=self.business_process_analyst,
-            output_file=self.researched_file.as_posix(),
-            max_retries=0,
-            tools=[
-                # self.draft_file_tool,
-                self.serper_tool,
-            ],
-            # context=[self.draft_process],
         )  # type: ignore[reportCallIssue]
 
     def setup_capture_assumptions(self) -> None:
@@ -218,10 +186,6 @@ class ClarifyTheAsk:
         )  # type: ignore
 
     def setup_crew(self) -> None:
-        embedder = None
-        if not os.environ.get("OPENAI_API_KEY"):
-            embedder = self.embedder
-
         self.crew = Crew(
             agents=[
                 self.business_process_analyst,
@@ -235,7 +199,7 @@ class ClarifyTheAsk:
                 self.quality_assurance_review,
             ],
             memory=True,
-            embedder=embedder,
+            embedder=self.embedder,
             # cache=False,
             verbose=True,
         )

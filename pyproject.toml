@@ -13,10 +13,10 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.11,<3.13.dev0"
+python = "^3.11,<3.12"
 virtualenv = "^20.28.0"
-crewai = "^0.95.0"
-crewai-tools = "^0.25.8"
+crewai = "^0.98.0"
+crewai-tools = "^0.32.1"
 langchain-ollama = "^0.2.2"
 pydantic = "^2.10.5"
 

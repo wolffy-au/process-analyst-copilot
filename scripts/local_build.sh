@@ -12,6 +12,10 @@ poetry env use python
 poetry env info
 
 poetry dynamic-versioning enable
+
+pip list --outdated
+pip check
+
 poetry lock
 poetry update --lock
 poetry install # --sync --without=dev

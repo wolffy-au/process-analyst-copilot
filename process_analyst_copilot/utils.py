@@ -15,12 +15,6 @@ os.environ["OTEL_PYTHON_DISABLED_INSTRUMENTATIONS"] = (
     "azure_sdk,django,fastapi,flask,psycopg2,requests,urllib,urllib3"
 )
 
-# FIXME: pydantic_core._pydantic_core.ValidationError: 1 validation error for Crew Value error, Please provide an
-# OpenAI API key.
-# Need to set false OPENAI_API_KEY to a non-empty string to avoid this error using memory=True on your Crew()
-if not os.environ.get("OPENAI_API_KEY"):
-    os.environ["OPENAI_API_KEY"] = "N/A"
-
 
 class OllamaLLM(LLM):  # type: ignore[misc]
     """Represents a custom LLM for Ollama with context window adjustments.
