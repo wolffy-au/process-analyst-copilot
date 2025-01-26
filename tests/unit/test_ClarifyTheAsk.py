@@ -22,7 +22,7 @@ def clarify_the_ask() -> ClarifyTheAsk:
     # llm_model = OllamaLLM(
     #     model="ollama/llama3.1:8b",
     #     temperature=0,
-    #     api_base="http://localhost:11434",
+    #     base_url="http://localhost:11434",
     # )
     # # Ollama default context window
     # # 2048 + 1 to trigger OllamaLLM context window warning
@@ -30,10 +30,18 @@ def clarify_the_ask() -> ClarifyTheAsk:
     # clarify_the_ask: ClarifyTheAsk = ClarifyTheAsk(
     #     llm_model=llm_model,
     # )
-    # clarify_the_ask.embedder = {
-    #     "provider": "ollama",
-    #     "config": {"model": "llama3.1:8b"},
-    # }
+    # clarify_the_ask.embedder = dict(
+    #     provider="ollama",
+    #     config=dict(
+    #         model="nomic-embed-text",
+    #     ),
+    # )
+    # clarify_the_ask.embedder_llm = dict(
+    #     provider="ollama",  # or google, openai, anthropic, llama2, ...
+    #     config=dict(
+    #         model="llama3.1:8b",
+    #     ),
+    # )
     # return clarify_the_ask
 
 
