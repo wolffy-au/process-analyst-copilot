@@ -26,6 +26,7 @@ poetry run pytest --cov=process_analyst_copilot --cov-report=term-missing --cov-
 poetry run behave
 
 poetry run pdoc --output-dir docs process_analyst_copilot
+# Update repo with final changes
 poetry run cz bump --changelog --yes
 poetry build
 

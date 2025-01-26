@@ -19,6 +19,8 @@ git branch -d feature-structuredprocess
 ** Merge develop back into main **
 poetry run pdoc --output-dir build/pdoc process_analyst_copilot
 poetry run cz bump --changelog --yes
+git push
+git push --tag
 poetry build
 git checkout develop
 git push --force-with-lease
