@@ -1831,23 +1831,6 @@ flake8 = ">=6.0.0"
 dev = ["coverage", "hypothesis", "hypothesmith (>=0.2)", "pre-commit", "pytest", "tox"]
 
 [[package]]
-name = "flake8-mypy"
-version = "17.8.0"
-description = "A plugin for flake8 integrating mypy."
-optional = false
-python-versions = "*"
-groups = ["dev"]
-files = [
-    {file = "flake8-mypy-17.8.0.tar.gz", hash = "sha256:47120db63aff631ee1f84bac6fe8e64731dc66da3efc1c51f85e15ade4a3ba18"},
-    {file = "flake8_mypy-17.8.0-py35.py36-none-any.whl", hash = "sha256:cff009f4250e8391bf48990093cff85802778c345c8449d6498b62efefeebcbc"},
-]
-
-[package.dependencies]
-attrs = "*"
-flake8 = ">=3.0.0"
-mypy = "*"
-
-[[package]]
 name = "flake8-pyproject"
 version = "1.2.3"
 description = "Flake8 plug-in loading the configuration from pyproject.toml"
@@ -9090,4 +9073,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11,<3.12"
-content-hash = "35fd9b9103157ace77ea89bdc5c957dd4ae124cc7a00eb751c0e5ea9ce56c293"
+content-hash = "1e0ff1946a43c5c00cc3b1e6cfea71364dd4f6d6a74399fc30a89d9fb54aaa4d"

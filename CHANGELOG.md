@@ -1,3 +1,21 @@
+## v0.4.0 (2025-01-27)
+
+### Feat
+
+- Update dependencies and improve local build script; fix CQPA references in configuration files
+- Add .gitignore files for config and db directories; refactor embedder configuration in ClarifyTheAsk class
+- Enhance setup of PQA agent with dynamic configuration
+- Introduce OllamaLLM class and utility functions; update VSCode settings for improved linting
+- Update poetry.lock and pyproject.toml to include flake8-mypy and adjust markers for compatibility
+
+### Fix
+
+- adjust context size and embedder model in ollama-sample.py
+
+### Refactor
+
+- Update Ollama code in test_ClarifyTheAsk.py for clarity and consistency
+
 ## v0.3.0 (2025-01-24)
 
 ### Feat

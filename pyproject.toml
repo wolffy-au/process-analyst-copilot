@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "process_analyst_copilot"
-version = "0.3.0" # This is not used - version is controlled by poetry_dynamic_versioning
+version = "0.4.0" # This is not used - version is controlled by poetry_dynamic_versioning
 description = "Hellow World deployment test"
 authors = ["Stephan Borg <wolffborg1@gmail.com>"]
 readme = "README.md"
@@ -33,7 +33,7 @@ flake8 = "^7.1.1"
 flake8-bugbear = "^24.10.31"
 flake8-annotations = "^3.1.1"
 flake8-pyproject = "^1.2.3"
-flake8-mypy = "^17.8.0"
+#flake8-mypy = "^17.8.0"
 behave = "^1.2.6"
 pdoc = "^15.0.1"
 commitizen = "^4.1.0"
