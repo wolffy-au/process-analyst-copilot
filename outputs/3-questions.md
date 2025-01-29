@@ -1,25 +1,34 @@
-1. **Tea Type Varieties**
-   - What specific types of tea do you prefer (e.g., black, green, herbal), and are you familiar with their preparation requirements?
-   
-2. **Availability of Ingredients**
-   - Are you certain that you have all required ingredients for your preferred tea preparation available each time you make tea? If not, what ingredients do you sometimes lack?
-   
-3. **Measurement Consistency**
-   - How do you measure the amount of water and tea you use? Do you have a specific measurement tool or method you prefer?
-   
-4. **Defining "Boiling" Point**
-   - Are you aware that the boiling point of water may differ based on your altitude? If so, what altitude do you typically brew tea at?
-   
-5. **Steeping Duration Preferences**
-   - How do you decide the steeping time for your tea? Do you have a specific duration you prefer, or do you adjust based on taste each time?
-   
-6. **Equipment Non-Uniformity**
-   - What type of kettle or boiling device do you use? Are you aware of how its efficiency might affect the tea brewing process?
-   
-7. **User Familiarity with Infusion Techniques**
-   - What method do you typically use to strain or remove your tea bags? Have you faced any challenges with this step in the past?
-   
-8. **Cooling Time**
-   - How long do you usually let your tea cool after brewing before you drink it? Do you have a specific temperature you aim for?
-   
-- **Feedback Prompt**: Are these questions clear and relevant to your tea-making process? Is there anything you feel is missing or needs further clarification?
+**Comprehensive Set of Targeted Questions to Address Assumptions in `2-assumptions.md`**
+
+1. **Uncertainty in Measuring Tea Leaves or Tea Bags**
+	* Question from the process user's perspective: What is your preferred amount of tea leaves or tea bags for a standard cup of tea?
+	* Related assumption: The desired amount of tea leaves or tea bags is based on personal preference.
+	* Assumed Value: None specified.
+	* Related Process Step(s): 3. Measure Tea Leaves or Tea Bags
+2. **Ambiguity in Using Loose-Leaf Tea**
+	* Question from the process user's perspective: Do you have a tea infuser or strainer available for preparing loose-leaf tea?
+	* Related assumption: If using loose-leaf tea, it is assumed that a tea infuser or strainer is available.
+	* Assumed Value: None specified.
+	* Related Process Step(s): 4. Prepare the Tea
+3. **Uncertainty in Steeping Time**
+	* Question from the process user's perspective: What is your preferred steeping time for optimal tea flavor?
+	* Related assumption: The recommended steeping time of 1-3 minutes is based on general guidelines.
+	* Assumed Value: None specified.
+	* Related Process Step(s): 5. Steep the Tea
+4. **Ambiguity in Notable Considerations**
+	* Question from the process user's perspective: Do you use filtered water when making tea, and do you avoid over-steeping?
+	* Related assumption: The use of filtered water and avoidance of over-steeping are assumed to be best practices.
+	* Assumed Value: None specified.
+	* Related Process Step(s): 2. Heat Water in the Kettle, 5. Steep the Tea
+5. **Uncertainty in Cleaning Up**
+	* Question from the process user's perspective: Do you wash the kettle and other equipment thoroughly after use?
+	* Related assumption: The kettle and other equipment used in the process are assumed to be washed thoroughly.
+	* Assumed Value: None specified.
+	* Related Process Step(s): 7. Clean Up
+6. **Ambiguity in Storage of Tea Leaves or Tea Bags**
+	* Question from the process user's perspective: Do you store tea leaves or tea bags in an airtight container to maintain freshness?
+	* Related assumption: The tea leaves or tea bags are assumed to be stored in an airtight container.
+	* Assumed Value: None specified.
+	* Related Process Step(s): 7. Clean Up
+
+By addressing these assumptions and uncertainties, the tea-making process can be refined to ensure consistency and optimal results.
