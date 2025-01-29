@@ -16,7 +16,6 @@ draft_process:
 research_activity:
   description: >
     Review the drafted process document `{draft_file}` and use internet search tools to find additional information, best practices, and improvements that can be incorporated into the process. 
-      Enhance the process by integrating relevant findings, ensuring that all enhancements are well-documented and supported by credible sources.
       Document all references used during the research to provide a clear trail of information and to validate the improvements made.
       The goal is to refine and optimise the process, making it more comprehensive, accurate, and effective.
   expected_output: >
@@ -28,7 +27,7 @@ research_activity:
 
 research_process:
   description: >
-    Review the drafted process document `{draft_file}` and use internet search tools to find additional information, best practices, and improvements that can be incorporated into the process. 
+    Using the discovered websites, review the drafted process document `{draft_file}` and incorporate additional suggetsions, best practices, and improvements into the process. 
       Enhance the process by integrating relevant findings, ensuring that all enhancements are well-documented and supported by credible sources.
       Document all references used during the research to provide a clear trail of information and to validate the improvements made.
       The goal is to refine and optimise the process, making it more comprehensive, accurate, and effective.
