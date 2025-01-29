@@ -1,0 +1,55 @@
+{
+  "searchParameters": {
+    "q": "simplest way to make a cup of tea",
+    "type": "search",
+    "num": 3,
+    "engine": "google"
+  },
+  "organic": [
+    {
+      "title": "How to make a cup of tea? - Whittock Consulting",
+      "link": "https://whittockconsulting.co.uk/how-to-make-a-cup-of-tea/",
+      "snippet": "1. Fill up the kettle with water · 2. Boil the kettle · 3. Place a teabag in your favourite mug · 4. Pour boiling water into your favourite mug · 5. Brew the tea ...",
+      "position": 1
+    },
+    {
+      "title": "How to make a cup of tea in 10 seconds",
+      "link": "https://www.goldenmoontea.com/blogs/tea/106686663-how-to-make-a-cup-of-tea-in-10-seconds?srsltid=AfmBOorypzYwHn7cu8lXtCUbeykcNARNJMfcY1mISYKwlYGXEphUZp4i",
+      "snippet": "It takes less than 10 seconds to make a cup of loose tea. To make a cup of loose tea can be as easy as filling your own teabag and heating it in the microwave.",
+      "position": 2
+    },
+    {
+      "title": "How to Make a 'proper' Cup of Tea! : 5 Steps - Instructables",
+      "link": "https://www.instructables.com/How-to-make-a-proper-cup-of-tea/",
+      "snippet": "Step 1: Boil the Water · Step 2: Return the Kettle to the Stove Top · Step 3: The Tea! · Step 4: Take the Pot to the Kettle · Step 5: A Nice Cup of Tea!",
+      "position": 3,
+      "sitelinks": [
+        {
+          "title": "Step 1: Boil The Water",
+          "link": "https://www.instructables.com/How-to-make-a-proper-cup-of-tea/#:~:text=Step%201%3A%20Boil%20the%20Water"
+        },
+        {
+          "title": "Step 3: The Tea!",
+          "link": "https://www.instructables.com/How-to-make-a-proper-cup-of-tea/#:~:text=Step%203%3A%20The%20Tea%21"
+        },
+        {
+          "title": "Step 5: A Nice Cup Of Tea!",
+          "link": "https://www.instructables.com/How-to-make-a-proper-cup-of-tea/#:~:text=Step%205%3A%20A%20Nice%20Cup%20of%20Tea%21"
+        }
+      ]
+    }
+  ],
+  "peopleAlsoAsk": [],
+  "relatedSearches": [
+    {
+      "query": "Simplest way to make a cup of tea with milk"
+    },
+    {
+      "query": "How to make a cup of tea simple steps"
+    },
+    {
+      "query": "How to make a cup of tea paragraph"
+    }
+  ],
+  "credits": 1
+}

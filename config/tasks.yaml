@@ -15,36 +15,21 @@ draft_process:
 
 research_activity:
   description: >
-    Review the drafted process document `{draft_file}` and use internet search tools to find additional information, best practices, and improvements that can be incorporated into the process. 
+    Review the drafted process document `{draft_process}` in conjunction with the user ask `{input_ask}` and use internet search tools to find additional information, best practices, and improvements that can be incorporated into the process. 
       Document all references used during the research to provide a clear trail of information and to validate the improvements made.
       The goal is to refine and optimise the process, making it more comprehensive, accurate, and effective.
   expected_output: >
     A list of websites and online resources that provide relevant information, best practices, and improvements for the process being documented. Each resource should be credible and well-documented, offering valuable insights to enhance the process.
-    Example Output:
-    - **Website 1:** [URL] - Description of the information found and how it is relevant to the process.
-    - **Website 2:** [URL] - Description of the information found and how it is relevant to the process.
-    - **Website 3:** [URL] - Description of the information found and how it is relevant to the process.
+    Output as a JSON string.
 
 research_process:
   description: >
-    Using the discovered websites, review the drafted process document `{draft_file}` and incorporate additional suggetsions, best practices, and improvements into the process. 
+    Using each of the link values in `search_results.json`, review the drafted process document `{draft_process}` step by step in conjunction with the user ask `{input_ask}` and incorporate additional suggestions, best practices, and improvements into the process. 
       Enhance the process by integrating relevant findings, ensuring that all enhancements are well-documented and supported by credible sources.
       Document all references used during the research to provide a clear trail of information and to validate the improvements made.
       The goal is to refine and optimise the process, making it more comprehensive, accurate, and effective.
   expected_output: >
     A refined and enhanced version of the process steps, incorporating additional information, best practices, and improvements found through internet research. Each step should be concise, easy to follow, and include additional context or substeps as needed to avoid ambiguity. Use numbered lists or nested bullet points to represent hierarchical workflows where applicable. Ensure all enhancements are well-documented and supported by credible sources.
-    Example Output:
-    # General Process: Short Description
-    ## Process Step 1: Short Description
-      1: Substep description ...
-      - **Reference:** Source of the information used for this substep.
-      2: Substep description ...
-      - **Reference:** Source of the information used for this substep.
-      3: Substep description ...
-      - **Reference:** Source of the information used for this substep.
-    ## Process Step 2: Short Description
-      1: Substep description ...
-      - **Reference:** Source of the information used for this substep.
 
 capture_assumptions:
   description: >

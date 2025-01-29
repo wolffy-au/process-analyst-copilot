@@ -44,3 +44,28 @@ class SearchResponse(BaseModel):
     peopleAlsoAsk: list[PeopleAlsoAsk]
     relatedSearches: list[RelatedSearch]
     credits: int
+
+    # implement model_validator to validate the response
+    @model_validator(mode="after")
+    def validate_response(
+        cls: "SearchResponse", values: dict[str, Any]
+    ) -> dict[str, Any]:
+        search_params = values.get("searchParameters", {})
+
+        if search_params.get("type") not in [
+            "organic",
+            "people_also_ask",
+            "related_searches",
+        ]:
+            raise ValueError("Invalid search type")
+
+        if not (1 <= search_params.get("num", 0) <= 10):
+            raise ValueError("Invalid number of results")
+
+        if search_params.get("engine") not in ["google", "bing"]:
+            raise ValueError("Invalid search engine")
+
+        if values.get("credits", 0) < 0:
+            raise ValueError("Invalid credits")
+
+        return values
