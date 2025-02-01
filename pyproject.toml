@@ -15,13 +15,13 @@ include = [
 [tool.poetry.dependencies]
 python = "^3.11,<3.12"
 virtualenv = "^20.28.0"
-crewai = "^0.98.0"
-crewai-tools = "^0.32.1"
+crewai = "^0.100.1"
+crewai-tools = "^0.33.0"
 langchain-ollama = "^0.2.2"
 pydantic = "^2.10.5"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.10.0"
+black = "^25.1.0"
 pyright = "^1.1.0"
 poetry-dynamic-versioning = "^1.6.0"
 pytest = "^8.3.4"

@@ -6,7 +6,7 @@ from crewai import Task, Crew
 from crewai_tools import FileReadTool
 from process_analyst_copilot import ClarifyTheAsk
 from process_analyst_copilot.SemanticAssert import semantic_assert
-from process_analyst_copilot.utils import OllamaLLM, llm_call
+from process_analyst_copilot.utils import llm_call
 
 
 @pytest.fixture
@@ -19,6 +19,8 @@ def clarify_the_ask() -> ClarifyTheAsk:
     return ClarifyTheAsk()
 
     # # Ollama setup for pytest
+    # from process_analyst_copilot.utils import OllamaLLM
+
     # llm_model = OllamaLLM(
     #     model="ollama/llama3.1:8b",
     #     temperature=0,

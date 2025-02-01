@@ -13,7 +13,10 @@ poetry env info
 
 poetry dynamic-versioning enable
 
-pip list --outdated
+pyenv update
+pyenv install --list | grep 3.11
+
+poetry show --outdated
 pip check
 
 poetry lock
