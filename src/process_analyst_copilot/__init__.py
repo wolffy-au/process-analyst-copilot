@@ -88,7 +88,7 @@ class ClarifyTheAsk:
             config=self.agents_config["business_process_analyst"],
             max_iter=2,  # Default: 20 iterations
             llm=self.llm_model,
-        )  # type: ignore[reportCallIssue]
+        )
 
         self.draft_file_tool = FileReadTool(file_path=self.draft_file.as_posix())
         self.assumptions_file_tool = FileReadTool(
@@ -129,7 +129,7 @@ class ClarifyTheAsk:
             max_iter=2,  # Default: 20 iterations
             llm=self.llm_model,
             tools=[self.cqpa_bok_tool],
-        )  # type: ignore
+        )
 
     def setup_draft_process(self) -> None:
         # Task 1.1: Draft process generation
@@ -137,7 +137,7 @@ class ClarifyTheAsk:
             config=self.tasks_config["draft_process"],
             agent=self.business_process_analyst,
             output_file=self.draft_file.as_posix(),
-        )  # type: ignore[reportCallIssue]
+        )
 
     def setup_capture_assumptions(self) -> None:
         # Task 2.1: Capture assumptions
@@ -146,7 +146,7 @@ class ClarifyTheAsk:
             agent=self.business_process_analyst,
             output_file=self.assumptions_file.as_posix(),
             tools=[self.draft_file_tool],
-        )  # type: ignore[reportCallIssue]
+        )
 
     def setup_clarify_details(self) -> None:
         # Task 3.1: Clarify details
@@ -155,7 +155,7 @@ class ClarifyTheAsk:
             agent=self.business_process_analyst,
             output_file=self.questions_file.as_posix(),
             tools=[self.draft_file_tool, self.assumptions_file_tool],
-        )  # type: ignore[reportCallIssue]
+        )
 
     # TODO include human clarification
     # TODO identify constraints
@@ -173,7 +173,7 @@ class ClarifyTheAsk:
                 self.assumptions_file_tool,
                 self.questions_file_tool,
             ],
-        )  # type: ignore[reportCallIssue]
+        )
 
     def setup_quality_assurance_review(self) -> None:
         # Task 5.2 Quality assure process
@@ -183,7 +183,7 @@ class ClarifyTheAsk:
             tools=[
                 self.reviewed_file_tool,
             ],
-        )  # type: ignore
+        )
 
     def setup_crew(self) -> None:
         self.crew = Crew(

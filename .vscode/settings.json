@@ -1,16 +1,28 @@
 {
-    "python.analysis.typeCheckingMode": "standard",
     "python.testing.pytestArgs": [
         "tests"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.languageServer": "Pylance",
+    "python.analysis.diagnosticMode": "workspace",
+    // "python.analysis.diagnosticSeverityOverrides": {
+    //     "reportCallIssue": false
+    // },
     "python.analysis.inlayHints.functionReturnTypes": true,
     "python.analysis.inlayHints.variableTypes": true,
+    "python.analysis.typeCheckingMode": "off",
     "black-formatter.importStrategy": "fromEnvironment",
+    "flake8.args": [
+        "--toml-config=pyproject.toml"
+    ],
     "flake8.importStrategy": "fromEnvironment",
+    "flake8.showNotifications": "onWarning",
+    "mypy-type-checker.args": [
+        "--config-file=pyproject.toml",
+        "--explicit-package-bases"
+    ],
     "mypy-type-checker.importStrategy": "fromEnvironment",
     "mypy-type-checker.reportingScope": "workspace",
-    "flake8.showNotifications": "onWarning"
+    "python-envs.pythonProjects": []
 }

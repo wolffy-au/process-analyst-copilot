@@ -23,6 +23,8 @@ The Process Analyst Copilot is an application designed to assist process analyst
 2. Install dependencies using Poetry:
     ```sh
     poetry install
+    pip install spacy
+    python -m spacy download en_core_web_sm
     ```
 
 3. Set up the environment variables:
@@ -49,6 +51,7 @@ The application uses YAML files for configuring agents and tasks. These files ar
 **Copy one of the `sample.py` files to continue:**
 - openai-sample.py
 - ollama-sample.py
+- gemini-sample.py
 
 1. Run the application:
     ```sh
