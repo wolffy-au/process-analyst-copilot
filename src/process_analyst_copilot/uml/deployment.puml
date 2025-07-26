@@ -1,0 +1,47 @@
+@startuml Deployment Diagram for Process Analyst Copilot
+
+title Deployment Diagram for Process Analyst Copilot
+
+' Define Nodes
+node "User Workstation / CI/CD Runner" as UserMachine {
+    node "Python Environment" as PythonEnv {
+        artifact "process-analyst-copilot" as App {
+            component "[ClarifyTheAsk]" as CAT
+            component "[SemanticAssert]" as SA
+        }
+        artifact "crewai" as CrewAILib
+        artifact "crewai_tools" as CrewToolsLib
+        artifact "spaCy" as SpaCyLib
+    }
+
+    folder "Local File System" as FS {
+        artifact "config/*.yaml" as ConfigFiles
+        artifact "outputs/*.md" as OutputFiles
+        artifact "references/*.pdf" as RefFiles
+        artifact ".env" as EnvFile
+    }
+
+    node "Ollama Service (Optional, Local)" as OllamaService {
+        artifact "LLM (e.g., llama3.1)" as OllamaLLM
+        artifact "Embedding Model\n(e.g., nomic-embed-text)" as OllamaEmbedder
+    }
+}
+
+cloud "Cloud LLM Providers" as CloudServices {
+    node "OpenAI API" as OpenAI
+    node "Google AI Platform (Gemini)" as Gemini
+}
+
+' Define Relationships
+CAT ..> CrewAILib : uses
+CAT ..> CrewToolsLib : uses
+SA ..> SpaCyLib : uses
+
+App --> FS : "reads/writes >"
+
+' Communication with LLM services is handled by the crewai library
+CrewAILib --> OllamaService : "uses (HTTP)"
+CrewAILib --> OpenAI : "uses (HTTPS)"
+CrewAILib --> Gemini : "uses (HTTPS)"
+
+@enduml

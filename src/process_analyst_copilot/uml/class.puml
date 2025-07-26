@@ -1,0 +1,75 @@
+@startuml Class Diagram for ClarifyTheAsk
+' !theme plain
+
+title Class Diagram for ClarifyTheAsk
+
+package "crewai" {
+    class LLM
+    class Agent
+    class Task
+    class Crew
+}
+
+package "crewai_tools" {
+    abstract class BaseTool
+    class FileReadTool extends BaseTool
+    class PDFSearchTool extends BaseTool
+}
+
+package "process_analyst_copilot" {
+    class ClarifyTheAsk {
+        + {static} CONFIG_FILES: Dict[str, str]
+        + {static} embedder_llm: Optional[Dict]
+        + {static} embedder: Optional[Dict]
+        - llm_model: LLM
+        - config_dir: Path
+        - output_dir: Path
+        - draft_file: Path
+        - assumptions_file: Path
+        - questions_file: Path
+        - reviewed_file: Path
+        - agents_config: Dict[str, Any]
+        - tasks_config: Dict[str, Any]
+        - business_process_analyst: Agent
+        - process_analyst_quality_assurance: Agent
+        - draft_file_tool: FileReadTool
+        - assumptions_file_tool: FileReadTool
+        - questions_file_tool: FileReadTool
+        - reviewed_file_tool: FileReadTool
+        - cqpa_bok_tool: PDFSearchTool
+        - draft_process: Task
+        - capture_assumptions: Task
+        - clarify_details: Task
+        - reviewed_process: Task
+        - quality_assurance_review: Task
+        - crew: Crew
+        --
+        + __init__(llm_model: Optional[LLM], ...)
+        - _load_yaml(file_name: str): Dict[str, Any]
+        + setup_bpa_agent(): void
+        + setup_pqa_agent(): void
+        + setup_draft_process(): void
+        + setup_capture_assumptions(): void
+        + setup_clarify_details(): void
+        + setup_reviewed_process(): void
+        + setup_quality_assurance_review(): void
+        + setup_crew(): void
+        + setup(): void
+        + kickoff(input_ask: str): str
+        + test_crew(n_iterations: int): void
+    }
+}
+
+ClarifyTheAsk "1" *-- "1" LLM : uses
+ClarifyTheAsk "1" *-- "1" Crew : creates
+ClarifyTheAsk "1" *-- "2" Agent : creates
+ClarifyTheAsk "1" *-- "5" Task : creates
+ClarifyTheAsk "1" *-- "5" BaseTool : creates >
+
+Crew "1" o-- "1..*" Agent
+Crew "1" o-- "1..*" Task
+Agent "1" *-- "1" LLM
+Agent "1" o-- "0..*" BaseTool
+Task "1" o-- "1" Agent
+
+@enduml

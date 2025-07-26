@@ -1,0 +1,65 @@
+@startuml Component Diagram for Process Analyst Copilot
+' !theme plain
+
+title Component Diagram for Process Analyst Copilot
+
+' Main Application Component
+package "process_analyst_copilot" {
+    component [ClarifyTheAsk] as CAT
+    component [Utilities] as Utils
+    component [SemanticAssert] as SA
+}
+
+' Client/Entrypoint
+component "Sample Scripts\n(e.g., sample-ollama.py)" as Samples
+
+' External Dependencies
+package "External Libraries" {
+    component [crewai]
+    component [crewai_tools]
+    component [spaCy]
+}
+
+' External Services
+cloud "LLM Provider\n(OpenAI, Ollama, Gemini)" as LLM_Service
+
+' Data Artifacts on File System
+package "File System" {
+    folder "config" {
+        artifact "agents.yaml" as AgentsConfig
+        artifact "tasks.yaml" as TasksConfig
+        folder "references" {
+            artifact "handbook.pdf" as HandbookPDF
+        }
+    }
+    folder "outputs" {
+        artifact "Process Docs (*.md)" as OutputDocs
+    }
+}
+
+
+' --- Relationships ---
+
+' Client to Core Component
+Samples --> CAT : instantiates & kicks off >
+
+' Core Component to Libraries and Utilities
+CAT ..> crewai : uses
+CAT ..> crewai_tools : uses
+CAT ..> Utils : uses (for logging)
+
+' Core Component to File System
+CAT ..> AgentsConfig : reads
+CAT ..> TasksConfig : reads
+CAT ..> OutputDocs : writes
+
+' Library to External Service
+crewai --> LLM_Service : makes API calls
+
+' Tool to File System
+crewai_tools ..> HandbookPDF : reads
+
+' Utility Component to Library
+SA ..> spaCy : uses
+
+@enduml

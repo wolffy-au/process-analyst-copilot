@@ -67,14 +67,13 @@ The application uses YAML files for configuring agents and tasks. These files ar
 Here is an example of how to use the application:
 
 ```python
-from process_analyst_copilot import ClarifyTheAsk, OllamaLLM
+from crewai import LLM
+from process_analyst_copilot import ClarifyTheAsk
 
-llm_model = OllamaLLM(
+llm_model = LLM(
     model="ollama/llama3.1:8b",
     temperature=0.3,
-    api_base="http://localhost:11434",
 )
-llm_model.num_ctx = 2048
 
 draft_process = ClarifyTheAsk(llm_model=llm_model)
 draft_process.setup()
