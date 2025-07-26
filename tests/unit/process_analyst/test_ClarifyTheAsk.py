@@ -14,13 +14,18 @@ def clarify_the_ask() -> ClarifyTheAsk:
 
     # OpenAI setup for pytest
     from dotenv import load_dotenv, find_dotenv
+    import os
 
     load_dotenv(find_dotenv())
 
+    ollama_model = "llama3.1:8b"
+    # ollama_model = "llama3.2:3b"
+    # ollama_model = "deepseek-r1"
+
     llm_model = LLM(
-        model="ollama/llama3.1:8b",
+        model=f"ollama/{ollama_model}",
         temperature=0.1,
-        num_ctx=131072,
+        num_ctx=8192,
     )
     # llm_model = LLM(model="gemini/gemini-2.0-flash", temperature=0)
 
@@ -35,6 +40,7 @@ def clarify_the_ask() -> ClarifyTheAsk:
         provider="ollama",
         config=dict(
             model="nomic-embed-text",
+            base_url=os.environ["OLLAMA_API_BASE"],
         ),
     )
     # This is in addition to the above for PDFReader on non-OpenAI LLMs
@@ -42,8 +48,8 @@ def clarify_the_ask() -> ClarifyTheAsk:
     clarify_the_ask.embedder_llm = dict(
         provider="ollama",  # or google, openai, anthropic, llama2, ...
         config=dict(
-            model="llama3.1:8b",
-            # num_ctx=131072,
+            model=ollama_model,
+            base_url=os.environ["OLLAMA_API_BASE"],
         ),
     )
 
@@ -53,13 +59,7 @@ def clarify_the_ask() -> ClarifyTheAsk:
 def test_llm_ctx_warn(clarify_the_ask: ClarifyTheAsk) -> None:
     result: int = clarify_the_ask.llm_model.get_context_window_size()
 
-    expected_output: int
-    if clarify_the_ask.llm_model.model == "ollama/llama3.1:8b":
-        expected_output = 6963
-    elif clarify_the_ask.llm_model.model == "gemini/gemini-2.0-flash":
-        expected_output = 6963
-    else:
-        expected_output = int(128000 * 0.75)
+    expected_output: int = 6963
 
     # Then assert that the result meets your expected output
     assert expected_output == result, f"Expected {expected_output}, but got {result}"
@@ -76,7 +76,7 @@ def test_llm_default(clarify_the_ask: ClarifyTheAsk) -> None:
 
 def test_llm_response(clarify_the_ask: ClarifyTheAsk) -> None:
     # Given some input data
-    input_data = "In one word what is the colour of the sky?"
+    input_data = "In one basic word, what is the colour of the sky on a clear day?"
     expected_output = "blue"
 
     # When calling your agent's method or task processing logic
@@ -92,14 +92,14 @@ def test_bpa_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
     clarify_the_ask.setup_bpa_agent()
 
     # Given some input data
-    input_data = "What is the first step to improve an existing process after collaborating with stakeholders?"
-    expected_output = "Requirement gathering"
+    input_data = "In two words only, after Collaborating with Stakeholders, what is the first step to improving an existing process? Requirements Gathering, Solution Design or Solution Testing?"
+    expected_output = "Requirements Gathering"
 
     # When calling your agent's method or task processing logic
     result: str = clarify_the_ask.business_process_analyst.execute_task(
         Task(
             description=input_data,
-            expected_output="In two words only",
+            expected_output="Two words only",
             max_retries=0,
         )
     )

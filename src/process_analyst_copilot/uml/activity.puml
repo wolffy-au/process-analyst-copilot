@@ -1,0 +1,51 @@
+@startuml  Activity Diagram for ClarifyTheAsk Workflow
+' !theme plain
+
+title Activity Diagram for ClarifyTheAsk Workflow
+
+start
+
+:Instantiate `ClarifyTheAsk` object;
+note right
+  - Initialize paths (config, output)
+  - Set default LLM if not provided
+  - Load `agents.yaml` and `tasks.yaml`
+end note
+
+:Call `setup()` method;
+
+partition "Setup Phase" {
+    :setup_bpa_agent()\nCreate Business Process Analyst Agent & FileReadTools;
+    :setup_pqa_agent()\nCreate Quality Assurance Agent & PDFSearchTool;
+    :setup_draft_process()\nCreate 'Draft Process' Task;
+    :setup_capture_assumptions()\nCreate 'Capture Assumptions' Task;
+    :setup_clarify_details()\nCreate 'Clarify Details' Task;
+    :setup_reviewed_process()\nCreate 'Review Process' Task;
+    :setup_quality_assurance_review()\nCreate 'Quality Assurance' Task;
+    :setup_crew()\nAssemble Agents and Tasks into a Crew object;
+}
+
+:Call `kickoff(input_ask)`;
+
+if (Is `crew` attribute initialized?) then (yes)
+    partition "Crew Execution (crew.kickoff)" {
+        :Crew executes **Draft Process** Task;
+        note right: BPA drafts the initial process.
+        :Crew executes **Capture Assumptions** Task;
+        note right: BPA lists assumptions from the draft.
+        :Crew executes **Clarify Details** Task;
+        note right: BPA formulates questions for clarification.
+        :Crew executes **Review Process** Task;
+        note right: BPA refines the process based on previous steps.
+        :Crew executes **Quality Assurance Review** Task;
+        note right: PQA reviews the final draft against standards.
+    }
+    :Return final result from crew execution;
+else (no)
+    :Raise RuntimeError;
+    stop
+endif
+
+stop
+
+@enduml

@@ -14,27 +14,28 @@ def step_impl_when_document_process(context: Context) -> None:
 
     # OpenAI setup for pytest
     from dotenv import load_dotenv, find_dotenv
+    import os
+    from crewai import LLM
 
     load_dotenv(find_dotenv())
     context.draft_process = ClarifyTheAsk()
 
-    # # FIXME Ollama is currently restricted to 2048 context windows
-    # # Workaround found here which is why this is editable
-    # # https://github.com/ollama/ollama/issues/8356#issuecomment-2579221678
-    # context.llm_model = OllamaLLM(
-    #     model="ollama/llama3.1:8b",
-    #     temperature=0.3,
-    #     api_base="http://localhost:11434",
-    # )
-    # context.llm_model.num_ctx = 2048
-    # # FIXME: pydantic_core._pydantic_core.ValidationError: 1 validation error for Crew Value error, Please provide an
-    # # OpenAI API key.
-    # # Need to set Crew() embedder to avoid this error using memory=True on your Crew()
-    # context.draft_process.embedder = {
-    #     "provider": "ollama",
-    #     "config": {"model": "llama3.1:8b"},
-    # }
-    # context.draft_process = ClarifyTheAsk(llm_model=context.llm_model)
+    context.llm_model = LLM(
+        model="ollama/llama3.1:8b",
+        temperature=0.1,
+    )
+
+    # FIXME: pydantic_core._pydantic_core.ValidationError: 1 validation error for Crew Value error, Please provide an
+    # OpenAI API key.
+    # Need to set Crew() embedder to avoid this error using memory=True on your Crew()
+    context.draft_process.embedder = dict(
+        provider="ollama",
+        config=dict(
+            model="nomic-embed-text",
+            base_url=os.environ["OLLAMA_API_BASE"],
+        ),
+    )
+    context.draft_process = ClarifyTheAsk(llm_model=context.llm_model)
 
     context.draft_process.setup()
     context.draft_process.draft_process.output_file = None

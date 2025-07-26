@@ -1,0 +1,121 @@
+@startuml Object Diagram for a `ClarifyTheAsk` Instance (Post-Setup)
+
+title Object Diagram for a `ClarifyTheAsk` Instance (Post-Setup)
+
+' Main application object instance
+object "clarify_the_ask: ClarifyTheAsk" as CTA {
+  llm_model = gpt4o_mini
+  config_dir = "/path/to/config"
+  output_dir = "/path/to/outputs"
+  agents_config = "{...}"
+  tasks_config = "{...}"
+}
+
+' LLM instance
+object "gpt4o_mini: LLM" as LLM_Instance {
+  model = "gpt-4o-mini"
+}
+
+' Agent instances
+object "bpa_agent: Agent" as BPA_Agent {
+  role = "Business Process Analyst"
+  goal = "..."
+  max_iter = 2
+}
+object "pqa_agent: Agent" as PQA_Agent {
+  role = "Process Quality Assurance"
+  goal = "..."
+  max_iter = 2
+}
+
+' Tool instances
+object "draft_tool: FileReadTool" as DraftTool {
+  file_path = "/path/to/outputs/1-draftprocess.md"
+}
+object "assumptions_tool: FileReadTool" as AssumptionsTool {
+  file_path = "/path/to/outputs/2-assumptions.md"
+}
+object "questions_tool: FileReadTool" as QuestionsTool {
+  file_path = "/path/to/outputs/3-questions.md"
+}
+object "reviewed_tool: FileReadTool" as ReviewedTool {
+  file_path = "/path/to/outputs/4-reviewedprocess.md"
+}
+object "cqpa_bok_tool: PDFSearchTool" as PDFTool {
+  pdf = "/path/to/config/references/handbook.pdf"
+}
+
+' Task instances
+object "draft_task: Task" as DraftTask {
+  description = "Draft the initial process..."
+}
+object "assumptions_task: Task" as AssumptionsTask {
+  description = "Capture assumptions..."
+}
+object "questions_task: Task" as QuestionsTask {
+  description = "Formulate clarifying questions..."
+}
+object "review_task: Task" as ReviewTask {
+  description = "Review and refine the process..."
+}
+object "qa_task: Task" as QATask {
+  description = "Perform quality assurance..."
+}
+
+' Crew instance
+object "crew: Crew" as TheCrew {
+  memory = True
+  verbose = True
+}
+
+' --- Links between objects ---
+
+' ClarifyTheAsk holds references to all created objects
+CTA *-- LLM_Instance
+CTA *-- BPA_Agent
+CTA *-- PQA_Agent
+CTA *-- DraftTool
+CTA *-- AssumptionsTool
+CTA *-- QuestionsTool
+CTA *-- ReviewedTool
+CTA *-- PDFTool
+CTA *-- DraftTask
+CTA *-- AssumptionsTask
+CTA *-- QuestionsTask
+CTA *-- ReviewTask
+CTA *-- QATask
+CTA *-- TheCrew
+
+' Crew holds references to its agents and tasks
+TheCrew "1" *-- "2" BPA_Agent : agents
+TheCrew "1" *-- "2" PQA_Agent : agents
+TheCrew "1" *-- "5" DraftTask : tasks
+TheCrew "1" *-- "5" AssumptionsTask : tasks
+TheCrew "1" *-- "5" QuestionsTask : tasks
+TheCrew "1" *-- "5" ReviewTask : tasks
+TheCrew "1" *-- "5" QATask : tasks
+
+' Agents use the LLM
+BPA_Agent --> LLM_Instance : uses
+PQA_Agent --> LLM_Instance : uses
+
+' PQA Agent has a specific tool
+PQA_Agent o-- PDFTool : tools
+
+' Tasks are assigned to agents
+DraftTask --> BPA_Agent : agent
+AssumptionsTask --> BPA_Agent : agent
+QuestionsTask --> BPA_Agent : agent
+ReviewTask --> BPA_Agent : agent
+QATask --> PQA_Agent : agent
+
+' Tasks use specific tools
+AssumptionsTask o-- DraftTool : tools
+QuestionsTask o-- DraftTool : tools
+QuestionsTask o-- AssumptionsTool : tools
+ReviewTask o-- DraftTool : tools
+ReviewTask o-- AssumptionsTool : tools
+ReviewTask o-- QuestionsTool : tools
+QATask o-- ReviewedTool : tools
+
+@enduml

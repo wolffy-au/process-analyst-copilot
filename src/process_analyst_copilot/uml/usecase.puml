@@ -1,0 +1,84 @@
+@startuml Use Case Diagram for Process Analyst Copilot
+
+title Use Case Diagram for Process Analyst Copilot
+
+' Define Actors
+actor User
+actor "LLM Service" as LLM_Service
+actor "File System" as FS
+
+package "Automated CrewAI Agents" {
+  actor "Business Process\nAnalyst (BPA)" as BPA_Agent
+  actor "Quality Assurance\nAnalyst (PQA)" as PQA_Agent
+}
+
+' Define the system boundary
+rectangle "Process Analyst Copilot System" {
+  usecase "Clarify Business Ask" as UC_Clarify
+  usecase "Configure System" as UC_Config
+
+  ' Sub-use cases that are part of the main clarification process
+  usecase "1. Draft Process" as UC_Draft
+  usecase "2. Capture Assumptions" as UC_Assumptions
+  usecase "3. Formulate Questions" as UC_Questions
+  usecase "4. Refine Process" as UC_Refine
+  usecase "5. Perform QA Review" as UC_QA
+
+  ' Supporting use cases
+  usecase "Read/Write Process Files" as UC_Files
+  usecase "Read Configuration" as UC_ReadConfig
+  usecase "Generate Text Content" as UC_GenerateText
+  usecase "Consult Knowledge Base" as UC_ConsultKB
+}
+
+' --- Actor to Use Case Relationships ---
+
+' Primary User interactions
+User --> UC_Config
+User --> UC_Clarify
+
+' Agent interactions with their specific tasks
+BPA_Agent -up-|> User : "<<internal>>"
+PQA_Agent -up-|> User : "<<internal>>"
+
+BPA_Agent -- UC_Draft
+BPA_Agent -- UC_Assumptions
+BPA_Agent -- UC_Questions
+BPA_Agent -- UC_Refine
+PQA_Agent -- UC_QA
+
+' Secondary Actor (System) interactions
+UC_GenerateText -- LLM_Service
+UC_ReadConfig -- FS
+UC_Files -- FS
+UC_ConsultKB -- FS : (reads PDF)
+
+' --- Use Case Relationships (Include/Extend) ---
+
+' The main "Clarify" use case includes all the sub-tasks
+UC_Clarify ..> UC_Draft : <<includes>>
+UC_Clarify ..> UC_Assumptions : <<includes>>
+UC_Clarify ..> UC_Questions : <<includes>>
+UC_Clarify ..> UC_Refine : <<includes>>
+UC_Clarify ..> UC_QA : <<includes>>
+
+' The agent tasks depend on supporting use cases
+UC_Draft ..> UC_GenerateText : <<includes>>
+UC_Assumptions ..> UC_GenerateText : <<includes>>
+UC_Questions ..> UC_GenerateText : <<includes>>
+UC_Refine ..> UC_GenerateText : <<includes>>
+UC_QA ..> UC_GenerateText : <<includes>>
+
+' Tasks read and write files
+UC_Assumptions ..> UC_Files : <<includes>>
+UC_Questions ..> UC_Files : <<includes>>
+UC_Refine ..> UC_Files : <<includes>>
+UC_QA ..> UC_Files : <<includes>>
+
+' QA task consults the knowledge base
+UC_QA ..> UC_ConsultKB : <<includes>>
+
+' The system needs configuration to start
+UC_Clarify ..> UC_ReadConfig : <<includes>>
+
+@enduml

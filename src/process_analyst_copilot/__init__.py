@@ -198,7 +198,7 @@ class ClarifyTheAsk:
                 self.reviewed_process,
                 self.quality_assurance_review,
             ],
-            memory=True,
+            memory=False,
             embedder=self.embedder,
             # cache=False,
             verbose=True,
