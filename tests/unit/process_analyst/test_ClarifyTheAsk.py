@@ -1,4 +1,5 @@
 import pytest
+import os
 from pytest import MonkeyPatch
 from pathlib import Path
 import yaml
@@ -6,7 +7,6 @@ from crewai import Task, Crew, LLM
 from crewai_tools import FileReadTool
 from process_analyst_copilot import ClarifyTheAsk
 from process_analyst_copilot.SemanticAssert import semantic_assert
-from process_analyst_copilot.utils import llm_call
 
 
 @pytest.fixture
@@ -18,41 +18,7 @@ def clarify_the_ask() -> ClarifyTheAsk:
 
     load_dotenv(find_dotenv())
 
-    ollama_model = "llama3.1:8b"
-    # ollama_model = "llama3.2:3b"
-    # ollama_model = "deepseek-r1"
-
-    llm_model = LLM(
-        model=f"ollama/{ollama_model}",
-        temperature=0.1,
-        num_ctx=8192,
-    )
-    # llm_model = LLM(model="gemini/gemini-2.0-flash", temperature=0)
-
-    clarify_the_ask: ClarifyTheAsk = ClarifyTheAsk(
-        llm_model=llm_model,
-    )
-
-    # FIXME: pydantic_core._pydantic_core.ValidationError: 1 validation error for Crew Value error, Please provide an
-    # OpenAI API key.
-    # Need to set Crew() embedder to avoid this error using memory=True on your Crew()
-    clarify_the_ask.embedder = dict(
-        provider="ollama",
-        config=dict(
-            model="nomic-embed-text",
-            base_url=os.environ["OLLAMA_API_BASE"],
-        ),
-    )
-    # This is in addition to the above for PDFReader on non-OpenAI LLMs
-    # https://docs.crewai.com/tools/pdfsearchtool#custom-model-and-embeddings
-    clarify_the_ask.embedder_llm = dict(
-        provider="ollama",  # or google, openai, anthropic, llama2, ...
-        config=dict(
-            model=ollama_model,
-            base_url=os.environ["OLLAMA_API_BASE"],
-        ),
-    )
-
+    clarify_the_ask: ClarifyTheAsk = ClarifyTheAsk()
     return clarify_the_ask
 
 
@@ -68,7 +34,7 @@ def test_llm_ctx_warn(clarify_the_ask: ClarifyTheAsk) -> None:
 def test_llm_default(clarify_the_ask: ClarifyTheAsk) -> None:
     cta = ClarifyTheAsk()
 
-    expected_output = "gpt-4o-mini"
+    expected_output = os.getenv("MODEL", "gpt-4o-mini")
     result = cta.llm_model.model
     # Then assert that the result meets your expected output
     assert expected_output == result, f"Expected {expected_output}, but got {result}"
@@ -80,7 +46,7 @@ def test_llm_response(clarify_the_ask: ClarifyTheAsk) -> None:
     expected_output = "blue"
 
     # When calling your agent's method or task processing logic
-    result: str = llm_call(llm=clarify_the_ask.llm_model, content=input_data)
+    result: str = LLM(model=os.getenv("MODEL", "gpt-4o-mini")).call(messages=input_data)
 
     # Then assert that the result meets your expected output
     assert semantic_assert(
@@ -99,7 +65,7 @@ def test_bpa_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
     result: str = clarify_the_ask.business_process_analyst.execute_task(
         Task(
             description=input_data,
-            expected_output="Two words only",
+            expected_output="Two words only, no preamble or summary.",
             max_retries=0,
         )
     )
@@ -123,7 +89,7 @@ def test_pqa_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
     result: str = clarify_the_ask.process_analyst_quality_assurance.execute_task(
         Task(
             description=input_data,
-            expected_output="Two words only",
+            expected_output="Two words only, no preamble or summary.",
             max_retries=0,
         )
     )

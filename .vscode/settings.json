@@ -1,4 +1,6 @@
 {
+    "editor.formatOnSave": true,
+    "notebook.formatOnSave.enabled": true,
     "python.testing.pytestArgs": [
         "tests"
     ],

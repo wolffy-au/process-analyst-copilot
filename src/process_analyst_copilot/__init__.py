@@ -6,18 +6,6 @@ import yaml
 from crewai import Agent, Task, Crew, LLM
 from crewai_tools import FileReadTool, PDFSearchTool
 
-# Configure logging
-LOG_LEVEL = os.getenv("LOG_LEVEL", "WARNING").upper()
-logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL, logging.WARNING),
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
-
-# Prevent OpenTelemetry errors from logging when behind a firewall
-os.environ["OTEL_PYTHON_DISABLED_INSTRUMENTATIONS"] = (
-    "azure_sdk,django,fastapi,flask,psycopg2,requests,urllib,urllib3"
-)
-
 
 class ClarifyTheAsk:
     """Manages the clarification process for business tasks using LLM and Crew.
@@ -31,8 +19,12 @@ class ClarifyTheAsk:
     """
 
     CONFIG_FILES = {"agents": "agents.yaml", "tasks": "tasks.yaml"}
-    embedder_llm: dict[Any, Any] | None = None
-    embedder: dict[Any, Any] | None = None
+    embedder: dict[Any, Any] | None = {
+        "provider": os.getenv("EMBEDDER_PROVIDER", None),
+        "config": {
+            "model": os.getenv("EMBEDDER_MODEL", None),
+        },
+    }
 
     def __init__(
         self,
@@ -53,7 +45,7 @@ class ClarifyTheAsk:
             questions_file (str): Path to the questions output file.
             reviewed_file (str): Path to the reviewed process output file.
         """
-        self.llm_model: LLM = llm_model or LLM(model="gpt-4o-mini")
+        self.llm_model: LLM = llm_model or LLM(model=os.getenv("MODEL", "gpt-4o-mini"))
 
         # Paths
         self.config_dir = Path(config_dir).resolve()
@@ -103,16 +95,20 @@ class ClarifyTheAsk:
 
     def setup_pqa_agent(self) -> None:
         """Sets up Certified  Quality Process Assurance agent."""
-        config = None
-        if self.embedder is not None and self.embedder_llm is not None:
-            config = dict(
-                llm=self.embedder_llm,
-                embedder=self.embedder,
-            )
-        elif self.embedder is not None and self.embedder_llm is None:
-            config = dict(
-                embedder=self.embedder,
-            )
+        config = dict(
+            embedder=self.embedder,
+            # llm=self.llm_model,
+        )
+
+        # if self.embedder is not None and self.embedder_llm is not None:
+        #     config = dict(
+        #         llm=self.embedder_llm,
+        #         embedder=self.embedder,
+        #     )
+        # elif self.embedder is not None and self.embedder_llm is None:
+        #     config = dict(
+        #         embedder=self.embedder,
+        #     )
 
         # Agent: Certified  Quality Process Assurance
         self.cqpa_bok_tool: PDFSearchTool = PDFSearchTool(
