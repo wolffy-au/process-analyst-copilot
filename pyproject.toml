@@ -49,6 +49,7 @@ dev = [
     "behave>=1.2.6,<2.0.0",
     "pdoc>=15.0.1,<16.0.0",
     "reportlab (>=4.4.3,<5.0.0)",
+    "ipykernel (>=6.30.0,<7.0.0)",
 ]
 
 [build-system]
@@ -69,7 +70,7 @@ style = "semver"
 
 [tool.mypy]
 strict = true
-packages = ["src", "test"]
+packages = ["src", "tests"]
 show_error_codes = true
 ignore_missing_imports = true
 allow_redefinition = false
