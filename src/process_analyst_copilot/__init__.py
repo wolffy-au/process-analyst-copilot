@@ -4,12 +4,11 @@ import os
 from pathlib import Path
 import yaml
 from crewai import Agent, Task, Crew, LLM, Flow
-from crewai.flow.flow import listen, start
-from crewai.crews.crew_output import CrewOutput
+from crewai.flow.flow import start
 from crewai_tools import FileReadTool, PDFSearchTool
 
 
-class ProcessAnalystCopilotBase(Flow):
+class ProcessAnalystCopilotBase(Flow):  # type: ignore[misc]
     CONFIG_FILES = {"agents": "agents.yaml", "tasks": "tasks.yaml"}
     embedder: dict[Any, Any] | None = {
         "provider": os.getenv("EMBEDDER_PROVIDER", None),
@@ -236,7 +235,7 @@ class ClarifyTheAsk(ProcessAnalystCopilotBase):
             verbose=True,
         )
 
-    @start()
+    @start()  # type: ignore[misc]
     def run_crew(self) -> str:
         """Kicks off the clarification process with the given input.
 

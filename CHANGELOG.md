@@ -1,3 +1,16 @@
+## v0.5.0 (2025-08-03)
+
+### Feat
+
+- switched to environment variables to control CrewAI models
+- update LLM integration and enhance documentation; refactor agent setup and cleanup scripts
+- update local build and git update scripts; bump dependencies and clean up test imports
+- update local build script and developer notes for final changes and git push commands
+
+### Refactor
+
+- made base class
+
 ## v0.4.0 (2025-01-27)
 
 ### Feat
@@ -16,7 +29,7 @@
 
 - Update Ollama code in test_ClarifyTheAsk.py for clarity and consistency
 
-## v0.3.0 (2025-01-24)
+## v0.3.0 (2025-01-26)
 
 ### Feat
 
@@ -32,6 +45,7 @@
 
 ### Feat
 
+- Process quality assurance role and task
 - Process quality assurance role and task
 
 ### Fix
