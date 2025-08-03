@@ -7,6 +7,14 @@ draft_process:
     A comprehensive, well-organized list of process steps. Each step should be concise, easy to 
     follow, and include additional context or substeps as needed to avoid ambiguity. Use numbered lists or nested 
     bullet points to represent hierarchical workflows where applicable.
+
+draft_process_human:
+  description: >
+    Convert the detailed JSON process document into human readable format. 
+    The goal is to ensure all steps and tasks within the process are captured accurately.
+  expected_output: >
+    A comprehensive, well-organized list of process steps and substeps. Each step should be concise, easy to 
+    follow, and include additional context or substeps as needed to avoid ambiguity.
     Example Output:
     **Process Step Number: Short Description**
       1: Substep description ...
@@ -15,7 +23,7 @@ draft_process:
 
 capture_assumptions:
   description: >
-    Review the detailed process document `{draft_file}` to identify areas with uncertainties, ambiguities, or gaps in the described process. 
+    For each ProcessStep identify areas with uncertainties, ambiguities, or gaps in the described process. 
     Clearly articulate these areas of uncertainty and develop a well-structured list of assumptions that require clarification.
     Document these assumptions in detail along with their assumed values, if applicable, to provide context for future reference.
     The goal is to ensure all uncertainties are highlighted and refined for accurate process documentation.
@@ -25,7 +33,6 @@ capture_assumptions:
     Each assumption should include the following details:
       - Specific assumption, gap or uncertainty identified
       - Assumed value (if applicable)
-      - Related process step(s) where the assumption applies
       - Additional context or explanation for a thorough understanding of the importance and impact on the process
     The list should be detailed and complete, leaving no critical detail or ambiguity unaddressed, providing a strong foundation for accurate and refined process documentation.
 

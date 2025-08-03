@@ -22,7 +22,7 @@ def clarify_the_ask() -> ClarifyTheAsk:
 def test_llm_ctx_warn(clarify_the_ask: ClarifyTheAsk) -> None:
     result: int = clarify_the_ask.llm_model.get_context_window_size()
 
-    expected_output: int = 6963
+    expected_output: int = 170000  # 6963
 
     # Then assert that the result meets your expected output
     assert expected_output == result, f"Expected {expected_output}, but got {result}"
@@ -173,6 +173,28 @@ def test_draft_process(clarify_the_ask: ClarifyTheAsk) -> None:
     ), f"Expected {expected_output}, but got {result}"
 
 
+# FIXME
+# Example test case for `draft_process_structured`
+def test_draft_process_structured(clarify_the_ask: ClarifyTheAsk) -> None:
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_draft_process_structured()
+
+    expected_output = """
+    """
+
+    draft_file = "doctest_1_draftprocess.md"
+    clarify_the_ask.draft_file_tool = FileReadTool(file_path=draft_file)
+
+    clarify_the_ask.draft_process_structured.output_file = None
+    crew = Crew(
+        agents=[clarify_the_ask.business_process_analyst],
+        tasks=[clarify_the_ask.draft_process_structured],
+    )
+    result: str = crew.kickoff().raw
+    assert expected_output == result, f"Expected {expected_output}, but got {result}"
+
+
+# FIXME
 # Example test case for `capture_assumptions`
 def test_capture_assumptions(clarify_the_ask: ClarifyTheAsk) -> None:
     clarify_the_ask.setup_agents()

@@ -4,8 +4,10 @@ import os
 from pathlib import Path
 import yaml
 from crewai import Agent, Task, Crew, LLM, Flow
-from crewai.flow.flow import start
-from crewai_tools import FileReadTool, PDFSearchTool
+from crewai.flow.flow import listen, start
+from crewai.crews.crew_output import CrewOutput
+from crewai_tools import SerperDevTool, FileReadTool, PDFSearchTool
+from process_analyst_copilot.data import GeneralProcess, GeneralProcessAssumptions
 
 
 class ProcessAnalystCopilotBase(Flow):  # type: ignore[misc]
@@ -33,7 +35,8 @@ class ProcessAnalystCopilotBase(Flow):  # type: ignore[misc]
             questions_file (str): Path to the questions output file.
             reviewed_file (str): Path to the reviewed process output file.
         """
-        self.llm_model: LLM = llm_model or LLM(model=os.getenv("MODEL", "gpt-4o-mini"))
+        super().__init__()
+        self.llm_model: LLM = llm_model or LLM(model="gpt-4o-mini")
 
         # Paths
         self.config_dir = Path(config_dir).resolve()
@@ -123,8 +126,13 @@ class ClarifyTheAsk(ProcessAnalystCopilotBase):
         )
 
         self.draft_file_tool = FileReadTool(file_path=self.draft_file.as_posix())
+        self.draft_file_json: str = self.draft_file.as_posix().replace(".md", ".json")
+        self.draft_json_tool = FileReadTool(file_path=self.draft_file_json)
         self.assumptions_file_tool = FileReadTool(
             file_path=self.assumptions_file.as_posix()
+        )
+        self.assumptions_file_json: str = self.assumptions_file.as_posix().replace(
+            ".md", ".json"
         )
         self.questions_file_tool = FileReadTool(
             file_path=self.questions_file.as_posix()
@@ -166,22 +174,90 @@ class ClarifyTheAsk(ProcessAnalystCopilotBase):
             tools=[self.cqpa_bok_tool],
         )
 
-    def setup_tasks(self) -> None:
+    def setup_draft_process(self) -> None:
         # Task 1.1: Draft process generation
         self.draft_process = Task(
             config=self.tasks_config["draft_process"],
             agent=self.business_process_analyst,
+            output_pydantic=GeneralProcess,
+            # tools=[self.serper_tool],
+        )
+
+        crew = Crew(
+            agents=[self.business_process_analyst],
+            tasks=[self.draft_process],
+            # embedder=self.embedder,
+            verbose=True,
+        )
+        results = crew.kickoff(
+            inputs={
+                "input_ask": self.input_ask,
+            }
+        )
+        print(self.state)
+        print(results)
+
+    def setup_draft_process_json(self) -> None:
+        # Task 1.2: Convert draft process into structured data
+        self.draft_process_json = Task(
+            config=self.tasks_config["draft_process_json"],
+            agent=self.business_process_analyst,
             output_file=self.draft_file.as_posix(),
         )
 
+    def setup_research_activity(self) -> None:
+        # Task 1.1: Research draft process
+        self.research_activity = Task(
+            config=self.tasks_config["research_activity"],
+            agent=self.business_process_analyst,
+            # output_pydantic=SearchResponse,
+            output_file=self.researched_file_json,
+            max_retries=0,
+            tools=[
+                # self.draft_file_tool,
+                self.serper_tool,
+            ],
+            context=[self.draft_process],
+        )
+
+    def setup_research_process(self) -> None:
+        # Task 1.1: Research draft process
+        self.research_process = Task(
+            config=self.tasks_config["research_process"],
+            agent=self.business_process_analyst,
+            output_json=GeneralProcess,
+            # output_file=self.draft_file_json,
+            output_file=self.researched_file.as_posix(),
+            max_retries=0,
+            tools=[
+                # self.draft_file_tool,
+                self.serper_tool,
+            ],
+            # context=[self.draft_process],
+        )
+
+    def setup_draft_process_human(self) -> None:
+        # Task 1.2: Convert draft process into structured data
+        self.draft_process_human = Task(
+            config=self.tasks_config["draft_process_human"],
+            agent=self.business_process_analyst,
+            output_file=self.draft_file.as_posix(),
+            context=[self.draft_process],
+            # async_execution=True,
+        )
+
+    def setup_capture_assumptions(self) -> None:
         # Task 2.1: Capture assumptions
         self.capture_assumptions = Task(
             config=self.tasks_config["capture_assumptions"],
             agent=self.business_process_analyst,
-            output_file=self.assumptions_file.as_posix(),
-            tools=[self.draft_file_tool],
+            output_json=GeneralProcessAssumptions,
+            output_file=self.assumptions_file_json,
+            tools=[self.draft_json_tool, self.draft_file_tool],
+            # context=[self.draft_process],
         )
 
+    def setup_clarify_details(self) -> None:
         # Task 3.1: Clarify details
         self.clarify_details = Task(
             config=self.tasks_config["clarify_details"],
@@ -223,11 +299,12 @@ class ClarifyTheAsk(ProcessAnalystCopilotBase):
                 self.process_analyst_quality_assurance,
             ],
             tasks=[
-                self.draft_process,
+                # self.draft_process,
+                # self.draft_process_human,
                 self.capture_assumptions,
-                self.clarify_details,
-                self.reviewed_process,
-                self.quality_assurance_review,
+                # self.clarify_details,
+                # self.reviewed_process,
+                # self.quality_assurance_review,
             ],
             memory=False,
             embedder=self.embedder,
