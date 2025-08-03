@@ -1,4 +1,5 @@
 import pytest
+from dotenv import load_dotenv, find_dotenv
 import os
 from pytest import MonkeyPatch
 from pathlib import Path
@@ -11,10 +12,6 @@ from process_analyst_copilot.SemanticAssert import semantic_assert
 
 @pytest.fixture
 def clarify_the_ask() -> ClarifyTheAsk:
-
-    # OpenAI setup for pytest
-    from dotenv import load_dotenv, find_dotenv
-    import os
 
     load_dotenv(find_dotenv())
 
@@ -58,7 +55,8 @@ def test_bpa_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
     clarify_the_ask.setup_agents()
 
     # Given some input data
-    input_data = "In two words only, after Collaborating with Stakeholders, what is the first step to improving an existing process? Requirements Gathering, Solution Design or Solution Testing?"
+    input_data = "In two words only, after Collaborating with Stakeholders, what is the first step to improving an \
+existing process? Requirements Gathering, Solution Design or Solution Testing?"
     expected_output = "Requirements Gathering"
 
     # When calling your agent's method or task processing logic

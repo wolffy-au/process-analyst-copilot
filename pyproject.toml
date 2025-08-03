@@ -45,7 +45,7 @@ dev = [
     "flake8-bugbear>=24.10.31,<25.0.0",
     "flake8-annotations>=3.1.1,<4.0.0",
     "flake8-pyproject>=1.2.3,<2.0.0",
-    "flake8-mypy>=17.8.0,<18.0.0",
+    #"flake8-mypy>=17.8.0,<18.0.0",
     "behave>=1.2.6,<2.0.0",
     "pdoc>=15.0.1,<16.0.0",
     "reportlab (>=4.4.3,<5.0.0)",
@@ -100,4 +100,4 @@ asyncio_default_fixture_loop_scope = "function"
 addopts = "--cov=src --junitxml='build/unit-tests.xml' --cov-report=xml:'build/coverage.xml' --cov-report=html:'build/coverage-reports' --cov-report=term-missing --cov-branch"
 
 [tool.poetry]
-version = "0.0.0"
+version = "0.5.0"
