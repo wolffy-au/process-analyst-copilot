@@ -4,14 +4,35 @@ draft_process:
     Break the task into clear, logical, and sequential steps, ensuring the process is well-structured, actionable, and 
     accounts for any dependencies, decision points, or notable considerations.
   expected_output: >
-    A comprehensive, well-organized list of process steps. Each step should be concise, easy to 
+    A comprehensive, well-organised list of process steps. Each step should be concise, easy to 
     follow, and include additional context or substeps as needed to avoid ambiguity. Use numbered lists or nested 
     bullet points to represent hierarchical workflows where applicable.
     Example Output:
-    **Process Step Number: Short Description**
+    # General Process: Short Description
+    ## Process Step 1: Short Description
       1: Substep description ...
       2: Substep description ...
       3: Substep description ...
+    ## Process Step 2: Short Description
+      1: Substep description ...
+
+research_activity:
+  description: >
+    Review the drafted process document `{draft_process}` in conjunction with the user ask `{input_ask}` and use internet search tools to find additional information, best practices, and improvements that can be incorporated into the process. 
+      Document all references used during the research to provide a clear trail of information and to validate the improvements made.
+      The goal is to refine and optimise the process, making it more comprehensive, accurate, and effective.
+  expected_output: >
+    A list of websites and online resources that provide relevant information, best practices, and improvements for the process being documented. Each resource should be credible and well-documented, offering valuable insights to enhance the process.
+    Output as a JSON string.
+
+research_process:
+  description: >
+    Using each of the link values in `search_results.json`, review the drafted process document `{draft_process}` step by step in conjunction with the user ask `{input_ask}` and incorporate additional suggestions, best practices, and improvements into the process. 
+      Enhance the process by integrating relevant findings, ensuring that all enhancements are well-documented and supported by credible sources.
+      Document all references used during the research to provide a clear trail of information and to validate the improvements made.
+      The goal is to refine and optimise the process, making it more comprehensive, accurate, and effective.
+  expected_output: >
+    A refined and enhanced version of the process steps, incorporating additional information, best practices, and improvements found through internet research. Each step should be concise, easy to follow, and include additional context or substeps as needed to avoid ambiguity. Use numbered lists or nested bullet points to represent hierarchical workflows where applicable. Ensure all enhancements are well-documented and supported by credible sources.
 
 capture_assumptions:
   description: >
@@ -33,10 +54,10 @@ clarify_details:
   description: >
     Develop a comprehensive set of targeted, specific questions to gather essential information from the user. This
     aims to identify and address potential ambiguities or missing details within the assumptions listed in
-    `{assumptions_file}`. The goal is to minimize assumptions and ensure that all critical information is clarified
+    `{assumptions_file}`. The goal is to minimise assumptions and ensure that all critical information is clarified
     with as few uncertainties remaining unaddressed. These questions should focus on refining the process for accuracy and completeness.
   expected_output: >
-    Provide a well-organized list of questions addressing the assumptions identified during analysis.
+    Provide a well-organised list of questions addressing the assumptions identified during analysis.
     Each question should include the following details:
       - Specific questions from the process user's perspective. For example what type of tea should be used when making tea? Or what is the desired serving temperature of the tea?
       - The related assumption, gap or uncertainty identified.
@@ -47,8 +68,8 @@ reviewed_process:
     Consolidate the documents `{draft_file}`, `{assumptions_file}` and `{questions_file}` into a single refined process. 
     Use clarified details from user responses to replace assumptions wherever possible, while incorporating 
     preferred assumed values only where explicitly documented. Ensure all remaining assumptions are clearly 
-    linked to their relevant process steps. The consolidated process should be optimized for precision, 
-    logical flow, and actionability, minimizing ambiguity and reliance on assumptions.
+    linked to their relevant process steps. The consolidated process should be optimised for precision, 
+    logical flow, and actionability, minimising ambiguity and reliance on assumptions.
   expected_output: >
     Provide a detailed and actionable version of the process steps, ensuring a logical and coherent structure. 
     Replace ambiguities with clarified information and explicitly reference any remaining assumptions 

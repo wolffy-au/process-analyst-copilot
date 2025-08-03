@@ -4,8 +4,9 @@ import os
 from pathlib import Path
 import yaml
 from crewai import Agent, Task, Crew, LLM, Flow
-from crewai.flow.flow import start
-from crewai_tools import FileReadTool, PDFSearchTool
+from crewai.flow.flow import listen, start
+from crewai_tools import FileReadTool, PDFSearchTool, SerperDevTool, ScrapeWebsiteTool
+from process_analyst_copilot.data import SearchResponse
 
 
 class ProcessAnalystCopilotBase(Flow):  # type: ignore[misc]
@@ -261,7 +262,6 @@ class ClarifyTheAsk(ProcessAnalystCopilotBase):
 
     # def test_crew(self, n_iterations: int = 3) -> None:
     #     """Tests the Crew instance with the given number of iterations.
-
     #     Args:
     #         n_iterations (int): The number of iterations to run. Defaults to 3.
     #     """
@@ -269,3 +269,117 @@ class ClarifyTheAsk(ProcessAnalystCopilotBase):
     #         self.crew.test(
     #             n_iterations=n_iterations, openai_model_name=self.llm_model.model
     #         )
+
+
+class ResearchProcess(ProcessAnalystCopilotBase):
+    def __init__(
+        self,
+        llm_model: Optional[LLM] = None,
+        config_dir: str = "config",
+        output_dir: str = "outputs",
+        draft_file: str = "1-draftprocess.md",
+    ) -> None:
+        super().__init__(llm_model, config_dir, output_dir, draft_file)
+        # Tools
+        self.serper_tool = SerperDevTool(n_results=3)
+        self.scrape_tool = ScrapeWebsiteTool()
+        self.draft_file_tool = FileReadTool(file_path=self.draft_file.as_posix())
+
+    def setup_agents(self) -> None:
+        # Agent: Web Intelligence Agent
+        self.web_intelligence_agent = Agent(
+            config=self.agents_config["web_intelligence_agent"],
+            max_iter=5,  # Default: 20 iterations
+            llm=self.llm_model,
+        )
+
+        # Agent: Busness Process Analyst
+        self.business_process_analyst = Agent(
+            config=self.agents_config["business_process_analyst"],
+            max_iter=5,  # Default: 20 iterations
+            llm=self.llm_model,
+        )
+
+    def setup_tasks(self) -> None:
+        # Task: Research Activity
+        search_results_file = self.output_dir / "search_results.json"
+        self.research_activity_task = Task(
+            config=self.tasks_config["research_activity"],
+            agent=self.web_intelligence_agent,
+            output_json=SearchResponse,
+            output_file=search_results_file.as_posix(),
+            tools=[self.serper_tool],
+        )
+
+        # Task: Research Process
+        search_results_tool = FileReadTool(file_path=search_results_file.as_posix())
+        self.research_process_task = Task(
+            config=self.tasks_config["research_process"],
+            agent=self.web_intelligence_agent,
+            # output_file=self.draft_file.as_posix(),
+            tools=[search_results_tool, self.scrape_tool],
+        )
+
+    def setup_crew(self) -> None:
+        self.crew = Crew(
+            agents=[self.web_intelligence_agent, self.business_process_analyst],
+            tasks=[
+                # self.research_activity_task,
+                self.research_process_task,
+            ],
+            # memory=True,
+            # embedder=self.embedder,
+            # cache=False,
+            verbose=True,
+        )
+
+    @start()
+    def gather_inputs(self) -> dict[Any, Any]:
+        if not hasattr(self, "crew"):
+            self.setup()
+
+        inputs: dict[str, Any] = {
+            "input_ask": "The simplest way to make a cup of tea?",
+            "draft_process": (
+                "1. Boil water, "
+                "2. Add tea leaves or tea bag to cup, "
+                "3. Pour hot water into the cup, "
+                "4. Steep for desired time, "
+                "5. Remove tea bag or leaves, "
+                "6. Serve"
+            ),
+            # "draft_file": "outputs/1-draftprocess.md",
+        }
+        return inputs
+
+    @listen(gather_inputs)
+    def research_activity(self, inputs: dict[str, Any]) -> str:
+        results = self.crew.kickoff(inputs)
+        print(results.raw)
+        return results.raw
+
+    # @research_process(research_activity)
+    # def store_leads_score(self, scores):
+    #     # Here we would store the scores in the database
+    #     return scores
+
+    # @listen(score_leads)
+    # def filter_leads(self, scores):
+    #     return [score for score in scores if score["lead_score"].score > 70]
+
+    # @listen(filter_leads)
+    # def write_email(self, leads):
+    #     scored_leads = [lead.to_dict() for lead in leads]
+    #     emails = email_writing_crew.kickoff_for_each(scored_leads)
+    #     return emails
+
+    # @listen(write_email)
+    # def send_email(self, emails):
+    #     # Here we would send the emails to the leads
+    #     return emails
+
+
+if __name__ == "__main__":
+    draft_process = ResearchProcess()
+    # draft_process.plot()
+    draft_process.kickoff()
