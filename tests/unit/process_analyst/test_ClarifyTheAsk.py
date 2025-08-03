@@ -55,7 +55,7 @@ def test_llm_response(clarify_the_ask: ClarifyTheAsk) -> None:
 
 
 def test_bpa_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_bpa_agent()
+    clarify_the_ask.setup_agents()
 
     # Given some input data
     input_data = "In two words only, after Collaborating with Stakeholders, what is the first step to improving an existing process? Requirements Gathering, Solution Design or Solution Testing?"
@@ -77,7 +77,7 @@ def test_bpa_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
 
 
 def test_pqa_agent_response(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_pqa_agent()
+    clarify_the_ask.setup_agents()
 
     # Given some input data
     input_data = (
@@ -146,8 +146,8 @@ def test_load_yaml_parsing_error(monkeypatch: MonkeyPatch, tmp_path: Path) -> No
 
 # Example test case for `draft_process`
 def test_draft_process(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_bpa_agent()
-    clarify_the_ask.setup_draft_process()
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_tasks()
 
     # Given some input data
     input_ask = "The simplest way to make a cup of tea?"
@@ -177,8 +177,8 @@ def test_draft_process(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `capture_assumptions`
 def test_capture_assumptions(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_bpa_agent()
-    clarify_the_ask.setup_capture_assumptions()
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_tasks()
 
     expected_output = """
     - Assumes a structured approach to making good tea.
@@ -206,8 +206,8 @@ def test_capture_assumptions(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `clarify_details`
 def test_clarify_details(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_bpa_agent()
-    clarify_the_ask.setup_clarify_details()
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_tasks()
 
     expected_output = """
     1. What is the ideal water temperature for brewing black tea?
@@ -239,8 +239,8 @@ def test_clarify_details(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `reviewed_process`
 def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_bpa_agent()
-    clarify_the_ask.setup_reviewed_process()
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_tasks()
 
     expected_output = """
     Step 4. **Add Tea Leaves/Bag**
@@ -271,9 +271,8 @@ def test_reviewed_process(clarify_the_ask: ClarifyTheAsk) -> None:
 
 # Example test case for `quality_assurance_review`
 def test_quality_assurance_review(clarify_the_ask: ClarifyTheAsk) -> None:
-    clarify_the_ask.setup_bpa_agent()
-    clarify_the_ask.setup_pqa_agent()
-    clarify_the_ask.setup_quality_assurance_review()
+    clarify_the_ask.setup_agents()
+    clarify_the_ask.setup_tasks()
 
     expected_output = """
     4. **Steep and Infuse**
