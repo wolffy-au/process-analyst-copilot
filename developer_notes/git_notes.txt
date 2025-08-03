@@ -13,7 +13,7 @@ git push --force-with-lease
 git checkout develop
 git merge feature-structuredprocess
 git push --force-with-lease
-git push -d origin/feature-structuredprocess feature-structuredprocess
+git push -d origin feature-structuredprocess
 git branch -d feature-structuredprocess 
 
 ** Merge develop back into main **
